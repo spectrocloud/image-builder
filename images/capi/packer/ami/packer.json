@@ -71,7 +71,7 @@
         "source_ami": "{{user `aws_source_ami_id`}}",
         "build_date": "{{isotime}}",
         "distribution": "{{user `os_name`}}",
-        "distribution_version": ""{{user `os_image_version`}},
+        "distribution_version": "{{user `os_image_version`}}",
         "kubernetes_version": "{{user `kubernetes_semver`}}",
         "kubernetes_cni_version": "{{user `kubernetes_cni_semver`}}"
       }
