@@ -84,7 +84,7 @@
         "sudo apt-get -qq update && sudo DEBIAN_FRONTEND=noninteractive apt-get -qqy install python python-pip"
       ],
       "only": [
-        "{{user `os_name`}}"
+        "ubuntu"
       ]
     },
     {
