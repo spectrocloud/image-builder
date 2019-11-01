@@ -75,7 +75,7 @@
         "kubernetes_version": "{{user `kubernetes_semver`}}",
         "kubernetes_cni_version": "{{user `kubernetes_cni_semver`}}"
       }
-    },
+    }
   ],
   "provisioners": [{
       "type": "shell",
@@ -84,7 +84,7 @@
         "sudo apt-get -qq update && sudo DEBIAN_FRONTEND=noninteractive apt-get -qqy install python python-pip"
       ],
       "only": [
-        "ubuntu-1804"
+        "{{user `os_name`}}"
       ]
     },
     {
