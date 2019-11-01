@@ -75,7 +75,7 @@
         "kubernetes_version": "{{user `kubernetes_semver`}}",
         "kubernetes_cni_version": "{{user `kubernetes_cni_semver`}}"
       }
-    },
+    }
   ],
   "provisioners": [{
       "type": "shell",
