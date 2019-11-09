@@ -39,7 +39,7 @@
     "subnet_id": ""
   },
   "builders": [{
-      "name": "osName",
+      "name": "{{user `os_name`}}",
       "type": "amazon-ebs",
       "instance_type": "{{user `aws_instance_type`}}",
       "source_ami": "{{user `aws_source_ami_id`}}",
