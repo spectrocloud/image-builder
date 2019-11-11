@@ -49,7 +49,7 @@
           "root-device-type": "ebs",
           "architecture": "x86_64"
         },
-        "owners": ["099720109477"],
+        "owners": ["{{user `aws_ami_owner`}}"],
         "most_recent": true
       },
       "ami_name": "spectro-{{user `os_name`}}-{{user `kubernetes_deb_version` | clean_resource_name}}-{{user `build_timestamp`}}",
@@ -63,7 +63,7 @@
       "profile": "{{ user `aws_profile`}}",
       "region": "{{ user `aws_region` }}",
       "secret_key": "{{user `aws_secret_key`}}",
-      "ssh_username": "ubuntu",
+      "ssh_username": "{{user `ssh_username`}}",
       "vpc_id": "{{ user `vpc_id` }}",
       "subnet_id": "{{ user `subnet_id` }}",
       "tags": {
