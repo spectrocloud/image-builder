@@ -46,63 +46,27 @@
   },
   "builders": [
     {
-      "type": "vsphere-iso",
+      "type": "vsphere-clone",
 
       "vcenter_server":      "{{user `vcentre_server`}}",
       "username":            "{{user `vcentre_username`}}",
       "password":            "{{user `vcentre_password`}}",
       "insecure_connection": "true",
-
-      "vm_name": "{{build_name}}-vsphere-kube-{{user `kubernetes_semver`}}",
+      "vm_name": "{{build_name}}-vsphere-ak-kube-{{user `kubernetes_semver`}}",
       "datacenter": "{{user `esxi_datacenter`}}",
       "datastore": "{{user `esxi_datastore`}}",
       "cluster": "{{user `esxi_cluster_name`}}",
-      "host":     "{{user `esxi_host`}}",
-
-      "guest_os_type": "ubuntu64Guest",
+      "host": "{{user `esxi_host`}}",
 
       "ssh_username": "{{user `ssh_username`}}",
-      "ssh_password": "{{user `ssh_username`}}",
+      "ssh_password": "{{user `ssh_password`}}",
       "ssh_timeout": "30m",
 
-      "CPUs":             2,
+      "CPUs":             1,
       "RAM":              1024,
       "RAM_reserve_all": true,
-
-      "disk_controller_type":  "pvscsi",
-      "disk_size":        32768,
-      "disk_thin_provisioned": true,
-
-      "network_card": "vmxnet3",
-
-      "iso_paths": [
-            "{{user `iso_path`}}"
-      ],
-      "floppy_files": [
-        "{{template_dir}}/linux/{{user `os_name`}}/http/base/preseed.cfg"
-      ],
-      "boot_command": [
-        "<enter><wait><f6><wait><esc><wait>",
-        "<bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>",
-        "<bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>",
-        "<bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>",
-        "<bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>",
-        "<bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>",
-        "<bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>",
-        "<bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>",
-        "<bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>",
-        "<bs><bs><bs>",
-        "/install/vmlinuz",
-        " initrd=/install/initrd.gz",
-        " auto=true",
-        " priority=critical",
-        " console-setup/ask_detect=false",
-        "console-setup/layoutcode=us console-setup/modelcode=pc105 debconf/frontend=noninteractive debian-installer=en_US fb=false",
-        "kbd-chooser/method=us keyboard-configuration/layout=USA keyboard-configuration/variant=USA locale=en_US netcfg/get_domain=local netcfg/get_hostname=localhost",
-        " locale=en_US",
-        " file=/media/preseed.cfg",
-        "<enter>"
-      ]
+      "communicator": "none",
+      "template": "ubuntu-1804-kube-v1.16.2"
     }
   ],
   "provisioners": [

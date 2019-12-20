@@ -20,6 +20,7 @@ all: build
 # A list of the supported distribution/version combinations. Each member
 # of *_BUILD_NAMES must have a corresponding file "config/*_BUILD_NAME.json".
 #OVA_BUILD_NAMES ?= ova-centos-7 ova-ubuntu-1804 ova-photon-3
+CLONE_BUILD_NAMES ?= clone-ubuntu-1804
 OVA_BUILD_NAMES ?= ova-ubuntu-1804
 AMI_BUILD_NAMES ?= ami-default
 GCE_BUILD_NAMES ?= gce-default
@@ -35,11 +36,16 @@ OLD_PACKER_FLAGS := $(PACKER_FLAGS)
 PACKER_FLAGS := $(foreach f,$(abspath $(PACKER_VAR_FILES)),-var-file="$(f)" )
 PACKER_FLAGS += $(OLD_PACKER_FLAGS)
 
+CLONE_BUILD_TARGETS := $(addprefix build-,$(CLONE_BUILD_NAMES))
 OVA_BUILD_TARGETS := $(addprefix build-,$(OVA_BUILD_NAMES))
 AMI_BUILD_TARGETS := $(addprefix build-,$(AMI_BUILD_NAMES))
 GCE_BUILD_TARGETS := $(addprefix build-,$(GCE_BUILD_NAMES))
 OVA_BUILD_TARGETS_ESX := $(addprefix build-,$(OVA_BUILD_NAMES_ESX))
 AZURE_BUILD_TARGETS := $(addprefix build-,$(AZURE_BUILD_NAMES))
+
+$(CLONE_BUILD_TARGETS):
+	packer build $(PACKER_FLAGS) -var-file="$(abspath packer/ova/$(subst build-,,$@).json)" packer/ova/packer_clone.json
+.PHONY: $(CLONE_BUILD_TARGETS)
 
 $(OVA_BUILD_TARGETS):
 	packer build $(PACKER_FLAGS) -var-file="$(abspath packer/ova/$(subst build-,,$@).json)" packer/ova/packer.json
