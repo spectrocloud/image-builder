@@ -52,7 +52,7 @@
       "username":            "{{user `vcentre_username`}}",
       "password":            "{{user `vcentre_password`}}",
       "insecure_connection": "true",
-      "vm_name": "{{build_name}}-vsphere-ak-kube-{{user `kubernetes_semver`}}",
+      "vm_name": "{{user `vm_name`}}-vsphere-{{user `os_name`}}-{{user `os_image_version`}}-{{user `kubernetes_semver`}}-{{user `ansible_digest`}}",
       "datacenter": "{{user `esxi_datacenter`}}",
       "datastore": "{{user `esxi_datastore`}}",
       "cluster": "{{user `esxi_cluster_name`}}",
