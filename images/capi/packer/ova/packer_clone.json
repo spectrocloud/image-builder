@@ -65,7 +65,7 @@
       "CPUs":             1,
       "RAM":              1024,
       "RAM_reserve_all": true,
-      "communicator": "none",
+      "communicator": "{{user `communicator`}}",
       "template": "ubuntu-1804-kube-v1.16.2"
     }
   ],
