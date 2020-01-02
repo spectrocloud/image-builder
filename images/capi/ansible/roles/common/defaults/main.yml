@@ -30,6 +30,8 @@ common_extra_rpms: []
 common_debs:
 - openssh-client
 - openssh-server
+- python
+- python3-pip
 - apt-transport-https
 - ebtables
 - socat
