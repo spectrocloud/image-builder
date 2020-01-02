@@ -20,7 +20,8 @@ common_rpms:
 - nfs-utils
 - ntp
 - open-vm-tools
-- python2-pip
+- python
+- python-pip
 - python-netifaces
 - python-requests
 - socat
