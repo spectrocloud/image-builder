@@ -64,3 +64,13 @@
     sysctl_set: yes
     reload: yes
     sysctl_file: "{{ sysctl_conf_file }}"
+
+- name: Disable swap memory
+  shell: |
+    swapoff -a
+
+- name: Disable swap memory in fstab
+  replace:
+    path: /etc/fstab
+    regexp: '^([^#].*?\sswap\s+sw\s+.*)$'
+    replace: '# \1'
