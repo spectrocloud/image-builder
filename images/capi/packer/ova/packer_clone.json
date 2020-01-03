@@ -57,13 +57,15 @@
       "datastore": "{{user `datastore`}}",
       "cluster": "{{user `cluster_name`}}",
       "host": "{{user `host`}}",
+      "folder": "{{user `folder`}}",
+      "resource_pool": "{{user `resource_pool`}}",
 
       "ssh_username": "{{user `ssh_username`}}",
       "ssh_password": "{{user `ssh_password`}}",
       "ssh_timeout": "30m",
 
-      "CPUs":             1,
-      "RAM":              1024,
+      "CPUs":  "{{user `cpu`}}",
+      "RAM":    "{{user `ram`}}",
       "RAM_reserve_all": true,
       "communicator": "{{user `communicator`}}",
       "template": "{{user `template`}}"
