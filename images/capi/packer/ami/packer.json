@@ -67,7 +67,7 @@
         "build_date": "{{isotime}}",
         "distribution": "{{user `os_name`}}",
         "distribution_version": "{{user `os_image_version`}}",
-        "spectroOS": "{{user `os_name`}}_{{user `os_image_version`}}",
+        "spectro_os": "{{user `os_name`}}_{{user `os_image_version`}}",
         "kubernetes": "{{user `kubernetes_semver`}}",
         "spectro_version": "{{user `spectro_version`}}",
         "kubernetes_cni_version": "{{user `kubernetes_cni_semver`}}"
