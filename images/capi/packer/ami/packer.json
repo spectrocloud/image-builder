@@ -61,6 +61,9 @@
       "ssh_username": "{{user `ssh_username`}}",
       "vpc_id": "{{ user `vpc_id` }}",
       "subnet_id": "{{ user `subnet_id` }}",
+      "run_tags": {
+        "Name": "{{user `spectro_cluster_name`}}-source_instance"
+      },
       "tags": {
         "build_timestamp": "{{user `build_timestamp`}}",
         "source_ami": "{{user `aws_source_ami_id`}}",
