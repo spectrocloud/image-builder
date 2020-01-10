@@ -52,7 +52,7 @@
       "username":            "{{user `vcenter_username`}}",
       "password":            "{{user `vcenter_password`}}",
       "insecure_connection": "true",
-      "vm_name": "{{user `vm_name`}}-vsphere-{{user `os_name`}}-{{user `os_image_version`}}-{{user `kubernetes_semver`}}-{{user `ansible_digest`}}",
+      "vm_name": "{{user `vm_name`}}-{{user `os_name`}}-{{user `os_image_version`}}-{{user `kubernetes_semver`}}-{{user `ansible_digest`}}",
       "datacenter": "{{user `datacenter`}}",
       "datastore": "{{user `datastore`}}",
       "cluster": "{{user `cluster_name`}}",
