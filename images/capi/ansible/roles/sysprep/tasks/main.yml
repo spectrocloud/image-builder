@@ -113,7 +113,7 @@
   loop: "{{ ssh_host_keys.files }}"
 
 - name: Remove SSH authorized users
-  when: ansible_os_family != "VMware Photon OS"
+  when: packer_builder_type | search('vsphere-clone')
   file:
     state: absent
     path: "{{ item.path }}"
