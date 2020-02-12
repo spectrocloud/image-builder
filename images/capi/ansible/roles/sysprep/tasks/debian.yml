@@ -65,3 +65,11 @@
   file:
     state: absent
     path: /etc/udev/rules.d/70-persistent-net.rules
+
+- name: Remove grup dir
+  file:
+    path: "/etc/default/grub.d"
+    state: absent
+
+- name: Update grub
+  command: "update-grub"
