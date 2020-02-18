@@ -45,6 +45,15 @@
 - name: Remove yum package lists
   command: /usr/bin/yum -y clean all
 
+- name: disable swap partirion
+  command: swapoff -a;rm -f /swapfile
+
+- name: remove swapfile
+  command: rm -f /swapfile
+
+- name: edit /etc/fstab file to disable swap
+  shell: sed -ri '/\sswap\s/s/^#?/#/' /etc/fstab
+
 - name: Reset network interface IDs
   shell: sed -i '/^\(HWADDR\|UUID\)=/d' /etc/sysconfig/network-scripts/ifcfg-*
 
