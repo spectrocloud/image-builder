@@ -46,12 +46,12 @@
   command: /usr/bin/yum -y clean all
 
 - name: disable swap partirion
-  command: swapoff -a;rm -f /swapfile
+  command: swapoff -a
 
 - name: remove swapfile
   command: rm -f /swapfile
 
-- name: edit /etc/fstab file to disable swap
+- name: edit fstab file to disable swap
   shell: sed -ri '/\sswap\s/s/^#?/#/' /etc/fstab
 
 - name: Reset network interface IDs
