@@ -51,6 +51,12 @@
 - name: Stop firewall daemon
   command: systemctl stop firewalld
 
+- name: Disable firewalld
+  command: systemctl disable firewalld
+
+- name: Mask firewalld
+  command: systemctl mask --now firewalld
+
 - name: Remove the kickstart log
   file:
     state: absent
