@@ -45,17 +45,11 @@
 - name: Remove yum package lists
   command: /usr/bin/yum -y clean all
 
-- name: disable swap partirion
-  command: swapoff -a
-
-- name: remove swapfile
-  command: rm -f /swapfile
-
-- name: edit fstab file to disable swap
-  shell: sed -ri '/\sswap\s/s/^#?/#/' /etc/fstab
-
 - name: Reset network interface IDs
   shell: sed -i '/^\(HWADDR\|UUID\)=/d' /etc/sysconfig/network-scripts/ifcfg-*
+
+- name: Stop firewall daemon
+  command: systemctl stop firewalld
 
 - name: Remove the kickstart log
   file:
