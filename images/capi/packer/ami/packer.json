@@ -47,7 +47,7 @@
         "owners": ["{{user `aws_ami_owner`}}"],
         "most_recent": true
       },
-      "ami_name": "spectro-{{user `os_name`}}-{{user `os_image_version`}}-{{user `kubernetes_deb_version` | clean_resource_name}}-{{user `ansible_digest`}}",
+      "ami_name": "{{user `ami_name`}}",
       "ami_groups": "{{user `ami_groups`}}",
       "ami_users": "{{user `ami_users`}}",
       "snapshot_groups": "{{user `snapshot_groups`}}",
