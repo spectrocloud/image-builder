@@ -26,7 +26,8 @@ common_rpms:
 - python-requests
 - socat
 - yum-utils
-common_extra_rpms: []
+common_extra_rpms:
+- kernel-devel
 common_debs:
 - openssh-client
 - openssh-server
