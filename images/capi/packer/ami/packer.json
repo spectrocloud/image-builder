@@ -1,13 +1,19 @@
 {
   "variables": {
+    "ansible_common_vars": "",
+    "ansible_extra_vars": "",
     "aws_access_key": "",
     "aws_secret_key": "",
     "aws_profile": "",
     "aws_region": "",
+    "iam_instance_profile": "",
     "build_timestamp": "{{timestamp}}",
     "disable_public_repos": "false",
     "encrypted": "false",
+    "kms_key_id": "",
+    "extra_debs": "",
     "extra_repos": "",
+    "extra_rpms": "",
     "containerd_version": null,
     "containerd_sha256": null,
     "containerd_url": "https://storage.googleapis.com/cri-containerd-release/cri-containerd-{{user `containerd_version`}}.linux-amd64.tar.gz",
@@ -53,11 +59,13 @@
       "snapshot_groups": "{{user `snapshot_groups`}}",
       "snapshot_users": "{{user `snapshot_users`}}",
       "encrypt_boot": "{{user `encrypted`}}",
+      "kms_key_id": "{{user `kms_key_id`}}",
       "ami_regions": "{{user `ami_regions`}}",
       "access_key": "{{user `aws_access_key`}}",
       "profile": "{{ user `aws_profile`}}",
       "region": "{{ user `aws_region` }}",
       "secret_key": "{{user `aws_secret_key`}}",
+      "iam_instance_profile": "{{user `iam_instance_profile`}}",
       "ssh_username": "{{user `ssh_username`}}",
       "vpc_id": "{{ user `vpc_id` }}",
       "subnet_id": "{{ user `subnet_id` }}",
@@ -87,7 +95,9 @@
       ],
       "extra_arguments": [
         "--extra-vars",
-        "containerd_url={{user `containerd_url`}} containerd_sha256={{user `containerd_sha256`}} disable_public_repos={{user `disable_public_repos`}} extra_repos={{user `extra_repos`}} kubernetes_cni_http_source={{user `kubernetes_cni_http_source`}} kubernetes_http_source={{user `kubernetes_http_source`}} kubernetes_container_registry={{user `kubernetes_container_registry`}} kubernetes_rpm_repo={{user `kubernetes_rpm_repo`}} kubernetes_rpm_gpg_key={{user `kubernetes_rpm_gpg_key`}} kubernetes_rpm_gpg_check={{user `kubernetes_rpm_gpg_check`}} kubernetes_deb_repo={{user `kubernetes_deb_repo`}} kubernetes_deb_gpg_key={{user `kubernetes_deb_gpg_key`}} kubernetes_cni_deb_version={{user `kubernetes_cni_deb_version`}} kubernetes_cni_rpm_version={{user `kubernetes_cni_rpm_version`}} kubernetes_cni_semver={{user `kubernetes_cni_semver`}} kubernetes_cni_source_type={{user `kubernetes_cni_source_type`}} kubernetes_semver={{user `kubernetes_semver`}} kubernetes_source_type={{user `kubernetes_source_type`}} kubernetes_deb_version={{user `kubernetes_deb_version`}} kubernetes_rpm_version={{user `kubernetes_rpm_version`}} reenable_public_repos={{user `reenable_public_repos`}} remove_extra_repos={{user `remove_extra_repos`}}"
+        "{{user `ansible_common_vars`}}",
+        "--extra-vars",
+        "{{user `ansible_extra_vars`}}"
       ]
     }
   ]

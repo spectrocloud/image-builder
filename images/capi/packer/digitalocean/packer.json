@@ -1,14 +1,12 @@
 {
   "variables": {
+    "access_token": "{{env `DIGITALOCEAN_ACCESS_TOKEN`}}",
     "ansible_common_vars": "",
     "ansible_extra_vars": "",
-    "project_id": "{{env `GCP_PROJECT_ID`}}",
     "build_timestamp": "{{timestamp}}",
-    "source_image_family": "ubuntu-1804-lts",
-    "machine_type": "n1-standard-1",
-    "disable_public_repos": "false",
-    "encrypted": "false",
-    "zone": null,
+    "size": "s-1vcpu-1gb",
+    "region": null,
+    "image_name": "cluster-api-ubuntu-1804",
     "containerd_version": null,
     "containerd_sha256": null,
     "containerd_url": "https://storage.googleapis.com/cri-containerd-release/cri-containerd-{{user `containerd_version`}}.linux-amd64.tar.gz",
@@ -38,22 +36,27 @@
   "builders": [
     {
       "name": "ubuntu-1804",
-      "type": "googlecompute",
-      "project_id": "{{ user `project_id` }}",
-      "machine_type": "{{ user `machine_type` }}",
-      "source_image_family": "{{ user `source_image_family` }}",
-      "image_name": "cluster-api-ubuntu-1804-{{user `kubernetes_semver` | clean_resource_name}}-{{user `build_timestamp`}}",
-      "image_family": "capi-ubuntu-1804-k8s-{{user `kubernetes_series` | clean_resource_name}}",
-      "zone": "{{ user `zone` }}",
-      "ssh_username": "ubuntu",
-      "labels": {
-        "build_timestamp": "{{user `build_timestamp`}}",
-        "source_ami": "{{user `ubuntu_18_04_ami`}}",
-        "distribution": "ubuntu",
-        "distribution_release": "bionic",
-        "distribution_version": "1804",
-        "kubernetes_version": "{{user `kubernetes_semver` | clean_resource_name}}"
-      }
+      "type": "digitalocean",
+      "api_token": "{{ user `access_token` }}",
+      "size": "{{ user `size` }}",
+      "image": "ubuntu-18-04-x64",
+      "region": "{{ user `region` }}",
+      "snapshot_name": "{{ user `image_name` }}-{{user `kubernetes_semver`}}-{{user `build_timestamp`}}",
+      "snapshot_regions": [
+        "nyc1",
+        "sgp1",
+        "lon1",
+        "nyc3",
+        "ams3",
+        "fra1",
+        "tor1",
+        "sfo2",
+        "blr1"
+      ],
+      "ssh_username": "root",
+      "tags": [
+        "{{ user `image_name` }}:{{ user `kubernetes_semver` | replace_all `.` `-` }}"
+      ]
     }
   ],
   "provisioners": [
