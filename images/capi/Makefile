@@ -119,6 +119,7 @@ PLATFORMS_AND_VERSIONS	:=	$(CENTOS_VERSIONS) \
 							$(UBUNTU_VERSIONS)
 
 OVA_BUILD_NAMES			:=	$(addprefix ova-,$(PLATFORMS_AND_VERSIONS))
+CLONE_BUILD_NAMES ?= clone-vm
 ESX_BUILD_NAMES			:=	$(addprefix esx-,$(OVA_BUILD_NAMES))
 
 AMI_BUILD_NAMES			?=	ami-default
@@ -131,6 +132,7 @@ DO_BUILD_NAMES 			?=	do-default
 ## Dynamic build targets
 ## --------------------------------------
 OVA_BUILD_TARGETS	:= $(addprefix build-,$(OVA_BUILD_NAMES))
+CLONE_BUILD_TARGETS	:= $(addprefix build-,$(CLONE_BUILD_NAMES))
 ESX_BUILD_TARGETS	:= $(addprefix build-,$(ESX_BUILD_NAMES))
 AMI_BUILD_TARGETS	:= $(addprefix build-,$(AMI_BUILD_NAMES))
 GCE_BUILD_TARGETS	:= $(addprefix build-,$(GCE_BUILD_NAMES))
@@ -140,6 +142,10 @@ DO_BUILD_TARGETS 	:= $(addprefix build-,$(DO_BUILD_NAMES))
 .PHONY: $(OVA_BUILD_TARGETS)
 $(OVA_BUILD_TARGETS):
 	packer build $(PACKER_FLAGS) -var-file="$(abspath packer/ova/$(subst build-,,$@).json)" -except=esx $(PACKER_VAR_FILES) packer/ova/packer.json
+
+.PHONY: $(CLONE_BUILD_TARGETS)
+$(CLONE_BUILD_TARGETS):
+	packer build $(PACKER_FLAGS) -var-file="$(abspath packer/ova/$(subst build-,,$@).json)" -except=esx $(PACKER_VAR_FILES) packer/ova/packer_clone.json
 
 .PHONY: $(ESX_BUILD_TARGETS)
 $(ESX_BUILD_TARGETS):
