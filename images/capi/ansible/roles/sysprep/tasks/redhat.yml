@@ -32,15 +32,15 @@
 
 - name: Stop firewall daemon
   command: systemctl stop firewalld
-  when: packer_builder_type | search('vsphere-clone')
+  when: packer_builder_type is search('vsphere-clone')
 
 - name: Disable firewalld
   command: systemctl disable firewalld
-  when: packer_builder_type | search('vsphere-clone')
+  when: packer_builder_type is search('vsphere-clone')
 
 - name: Mask firewalld
   command: systemctl mask --now firewalld
-  when: packer_builder_type | search('vsphere-clone')
+  when: packer_builder_type is search('vsphere-clone')
 
 - name: Remove the kickstart log
   file:
