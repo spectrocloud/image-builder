@@ -1,0 +1,298 @@
+apiVersion: apiextensions.k8s.io/v1beta1
+kind: CustomResourceDefinition
+metadata:
+  creationTimestamp: null
+  name: awscloudconfigs.cluster.spectrocloud.com
+spec:
+  group: cluster.spectrocloud.com
+  names:
+    categories:
+    - cluster-api
+    kind: AwsCloudConfig
+    plural: awscloudconfigs
+    shortNames:
+    - acc
+  scope: Namespaced
+  subresources:
+    status: {}
+  validation:
+    openAPIV3Schema:
+      description: AwsCloudConfig is the Schema for the awscloudconfigs API
+      properties:
+        apiVersion:
+          description: 'APIVersion defines the versioned schema of this representation
+            of an object. Servers should convert recognized schemas to the latest
+            internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#resources'
+          type: string
+        kind:
+          description: 'Kind is a string value representing the REST resource this
+            object represents. Servers may infer this from the endpoint the client
+            submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#types-kinds'
+          type: string
+        metadata:
+          type: object
+        spec:
+          description: AwsCloudConfigSpec defines the cloud configuration input by
+            user This will translate to clusterspec/machinespec for cluster-api
+          properties:
+            cloudAccountRef:
+              description: cloudAccountRef should point to the secret which contains
+                AwsCloudAccount
+              properties:
+                apiVersion:
+                  description: API version of the referent.
+                  type: string
+                fieldPath:
+                  description: 'If referring to a piece of an object instead of an
+                    entire object, this string should contain a valid JSON/Go field
+                    access statement, such as desiredState.manifest.containers[2].
+                    For example, if the object reference is to a container within
+                    a pod, this would take on a value like: "spec.containers{name}"
+                    (where "name" refers to the name of the container that triggered
+                    the event) or if no container name is specified "spec.containers[2]"
+                    (container with index 2 in this pod). This syntax is chosen only
+                    to have some well-defined way of referencing a part of an object.
+                    TODO: this design is not final and this field is subject to change
+                    in the future.'
+                  type: string
+                kind:
+                  description: 'Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#types-kinds'
+                  type: string
+                name:
+                  description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names'
+                  type: string
+                namespace:
+                  description: 'Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/'
+                  type: string
+                resourceVersion:
+                  description: 'Specific resourceVersion to which this reference is
+                    made, if any. More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#concurrency-control-and-consistency'
+                  type: string
+                uid:
+                  description: 'UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids'
+                  type: string
+              type: object
+            clusterConfig:
+              description: cluster level configuration for aws cloud, same for all
+                machinepools
+              properties:
+                region:
+                  type: string
+                sshKeyName:
+                  type: string
+              required:
+              - region
+              type: object
+            machinePoolConfig:
+              items:
+                properties:
+                  azs:
+                    items:
+                      type: string
+                    type: array
+                  infraBundleRef:
+                    description: InfraBundleRef point to the Bundle which contains
+                      InfraBundleTemplate
+                    properties:
+                      apiVersion:
+                        description: API version of the referent.
+                        type: string
+                      fieldPath:
+                        description: 'If referring to a piece of an object instead
+                          of an entire object, this string should contain a valid
+                          JSON/Go field access statement, such as desiredState.manifest.containers[2].
+                          For example, if the object reference is to a container within
+                          a pod, this would take on a value like: "spec.containers{name}"
+                          (where "name" refers to the name of the container that triggered
+                          the event) or if no container name is specified "spec.containers[2]"
+                          (container with index 2 in this pod). This syntax is chosen
+                          only to have some well-defined way of referencing a part
+                          of an object. TODO: this design is not final and this field
+                          is subject to change in the future.'
+                        type: string
+                      kind:
+                        description: 'Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#types-kinds'
+                        type: string
+                      name:
+                        description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names'
+                        type: string
+                      namespace:
+                        description: 'Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/'
+                        type: string
+                      resourceVersion:
+                        description: 'Specific resourceVersion to which this reference
+                          is made, if any. More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#concurrency-control-and-consistency'
+                        type: string
+                      uid:
+                        description: 'UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids'
+                        type: string
+                    type: object
+                  infraBundleTemplate:
+                    description: InfraBundle contains OS/Kernel for this NodePool
+                    properties:
+                      cloudType:
+                        type: string
+                      packServerRefs:
+                        description: PackServerRefs is only used on Hubble side it
+                          is reference to pack registry servers which PackRef belongs
+                          to in hubble, pack server is a top level object, so use
+                          a reference to point to it packs within a bundle can come
+                          from different pack servers, so this is an array
+                        items:
+                          description: ObjectReference contains enough information
+                            to let you inspect or modify the referred object.
+                          properties:
+                            apiVersion:
+                              description: API version of the referent.
+                              type: string
+                            fieldPath:
+                              description: 'If referring to a piece of an object instead
+                                of an entire object, this string should contain a
+                                valid JSON/Go field access statement, such as desiredState.manifest.containers[2].
+                                For example, if the object reference is to a container
+                                within a pod, this would take on a value like: "spec.containers{name}"
+                                (where "name" refers to the name of the container
+                                that triggered the event) or if no container name
+                                is specified "spec.containers[2]" (container with
+                                index 2 in this pod). This syntax is chosen only to
+                                have some well-defined way of referencing a part of
+                                an object. TODO: this design is not final and this
+                                field is subject to change in the future.'
+                              type: string
+                            kind:
+                              description: 'Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#types-kinds'
+                              type: string
+                            name:
+                              description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names'
+                              type: string
+                            namespace:
+                              description: 'Namespace of the referent. More info:
+                                https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/'
+                              type: string
+                            resourceVersion:
+                              description: 'Specific resourceVersion to which this
+                                reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#concurrency-control-and-consistency'
+                              type: string
+                            uid:
+                              description: 'UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids'
+                              type: string
+                          type: object
+                        type: array
+                      packServerSecret:
+                        description: This secret is used only on Palette side use
+                          case is similar  to k8s image pull secret this single secret
+                          internally should contains all the pack servers in PackServerRefs
+                          if empty, means no credential is needed to access the pack
+                          server For spectro saas, Ally will set this field before
+                          pass to palette
+                        type: string
+                      packs:
+                        description: Packs definitions here are final definitions.
+                          If ClonedFrom and ParamsOverwrite is present, then Packs
+                          are the final merge result of ClonedFrom and ParamsOverwrite
+                          So orchestration engine will just take the Packs and do
+                          the work, no need to worry about parameters merge
+                        items:
+                          description: PackRef server/name:tag to point to a pack
+                            PackRef is used when construct a Bundle PackSpec is used
+                            for UI to render the parameters form Bundle will not know
+                            inner details of a pack Bundle only contain pack name:tag,
+                            and the param values user entered for it
+                          properties:
+                            digest:
+                              description: digest is used to specify the version should
+                                be installed by palette when pack upgrade avaialbe,
+                                change this digest to trigger upgrade
+                              type: string
+                            layer:
+                              type: string
+                            name:
+                              description: pack name
+                              type: string
+                            packUID:
+                              description: PackUID is Hubble packUID, not palette
+                                Pack.UID It is used by Hubble only.
+                              type: string
+                            params:
+                              additionalProperties:
+                                type: string
+                              type: object
+                            server:
+                              description: pack registry server
+                              type: string
+                            tag:
+                              description: pack tag
+                              type: string
+                          required:
+                          - layer
+                          - name
+                          type: object
+                        type: array
+                      type:
+                        type: string
+                      version:
+                        description: version start from 0, matching the index of BundleSpec.Versions[]
+                          will be used by clusterSpec to identify which version is
+                          applied to the cluster
+                        format: int32
+                        type: integer
+                    type: object
+                  instanceType:
+                    description: instance type
+                    type: string
+                  isControlPlane:
+                    description: whether this pool is for control plane
+                    type: boolean
+                  labels:
+                    description: 'labels for this pool, example: master/worker, gpu,
+                      windows'
+                    items:
+                      type: string
+                    type: array
+                  name:
+                    type: string
+                  size:
+                    description: size of the pool, number of machines
+                    format: int32
+                    type: integer
+                type: object
+              type: array
+          type: object
+        status:
+          description: AwsCloudConfigStatus defines the observed state of AwsCloudConfig
+            The cloudimage info built by Mold is stored here image should be mapped
+            to a specific machinepool
+          properties:
+            ansible_role_digest:
+              description: For mold controller to identify if is there any changes
+                in Pack
+              type: string
+            images:
+              description: Images array items should be 1-to-1 mapping to Spec.MachinePoolConfig
+              items:
+                properties:
+                  id:
+                    type: string
+                  os:
+                    type: string
+                  region:
+                    type: string
+                  state:
+                    type: string
+                type: object
+              type: array
+            packer_digest:
+              type: string
+          type: object
+      type: object
+  version: v1alpha1
+  versions:
+  - name: v1alpha1
+    served: true
+    storage: true
+status:
+  acceptedNames:
+    kind: ""
+    plural: ""
+  conditions: []
+  storedVersions: []
