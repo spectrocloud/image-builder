@@ -12,6 +12,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 ---
+- name: Put templated sources.list in place
+  template:
+    src: etc/apt/sources.list.j2
+    dest: /etc/apt/sources.list
+
 - name: Find existing repo files
   find:
     depth: 1
@@ -31,14 +36,13 @@
   copy:
     src: "{{ item }}"
     dest: "/etc/apt/sources.list.d/{{ item | basename }}"
-  loop: "{{ extra_repos.split(',') }}"
+  loop: "{{ extra_repos.split() }}"
   when: extra_repos != ""
 
 - name: update apt cache
   apt:
     force_apt_get: True
     update_cache: True
-    cache_valid_time: 3600
 
 - name: perform a dist-upgrade
   apt:
@@ -54,7 +58,7 @@
 - name: install extra debs
   apt:
     force_apt_get: True
-    name: "{{ common_extra_debs }}"
+    name: "{{ extra_debs.split() }}"
     state: latest
 
 - name: install pinned debs

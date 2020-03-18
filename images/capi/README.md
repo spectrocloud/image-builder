@@ -1,36 +1,5 @@
-# Build OVAs and AMIs
+# Image Builder for Cluster API
 
-[build ova instructions](packer/ova/README.md)  
-[build ami instructions](packer/ami/README.md)  
-  
-## Make targets
+The Image Builder can be used to build images intended for use with Kubernetes [CAPI](https://cluster-api.sigs.k8s.io/) providers. Each provider has its own format of images that it can work with. For example, AWS instances use AMIs, and vSphere uses OVAs.
 
-Check the Makefile to see a list of images may be built
-
-| Targets |
-|---------|
-| `make build-ova-centos-7` |
-| `make build-ova-ubuntu-1804` |
-| `make build-ova-photon-3` |
-| `make build-ami-default` |
-
-## Configuration
-
-The `packer/config` directory includes several JSON files that define the configuration for the images:
-
-| File | Description |
-|------|-------------|
-| `packer/config/kubernetes.json` | The version of Kubernetes to install |
-| `packer/config/cni.json` | The version of Kubernetes CNI to install |
-| `packer/config/containerd.json` | The version of containerd to install |
-
-## Kubernetes versions
-| Tested Kubernetes Versions |
-|---------|
-| `1.13.x` |
-| `1.14.x` |
-| `1.15.x` |
-
-## Output
-
-The OVA images are built and located in `output/BUILD_NAME+kube-KUBERNETES_VERSION`
+For detailed documentation, see https://image-builder.sigs.k8s.io/capi/capi.html.

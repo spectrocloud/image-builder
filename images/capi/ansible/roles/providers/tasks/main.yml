@@ -15,8 +15,11 @@
 - include_tasks: aws.yml
   when: packer_builder_type.startswith('amazon') 
 
+- include_tasks: azure.yml
+  when: packer_builder_type.startswith('azure') 
+
 - include_tasks: vmware.yml
-  when: packer_builder_type | search('vsphere-clone')
+  when: packer_builder_type is search('vsphere-clone')
 
 - include_tasks: googlecompute.yml
   when: packer_builder_type.startswith('googlecompute')

@@ -1,16 +1,23 @@
 {
   "variables": {
+    "ansible_common_vars": "",
+    "ansible_extra_vars": "guestinfo_datasource_slug={{user `guestinfo_datasource_slug`}} guestinfo_datasource_ref={{user `guestinfo_datasource_ref`}} ",
     "boot_wait": "10s",
     "build_timestamp": "{{timestamp}}",
-    "capi_version": "v1alpha1",
+    "build_version": "{{user `build_name`}}-kube-{{user `kubernetes_semver`}}",
     "containerd_version": null,
     "containerd_sha256": null,
     "containerd_url": "https://storage.googleapis.com/cri-containerd-release/cri-containerd-{{user `containerd_version`}}.linux-amd64.tar.gz",
     "disable_public_repos": "false",
     "disk_type_id": "0",
     "existing_ansible_ssh_args": "{{env `ANSIBLE_SSH_ARGS`}}",
+    "extra_debs": "",
     "extra_repos": "",
+    "extra_rpms": "",
     "format": "",
+    "guestinfo_datasource_slug": "https://raw.githubusercontent.com/vmware/cloud-init-vmware-guestinfo",
+    "guestinfo_datasource_ref": "master",
+    "guest_os_type": null,
     "headless": "true",
     "kubernetes_cni_rpm_version": null,
     "kubernetes_cni_deb_version": null,
@@ -29,7 +36,7 @@
     "kubernetes_rpm_gpg_check": null,
     "kubernetes_container_registry": null,
     "network": "",
-    "output_dir": "./output/{{user `build_name`}}-kube-{{user `kubernetes_semver`}}",
+    "output_dir": "./output/{{user `build_version`}}",
     "reenable_public_repos": "true",
     "remove_extra_repos": "false",
     "remote_type": "",
@@ -38,6 +45,8 @@
     "remote_username": "",
     "remote_password": "",
     "skip_compaction": "false",
+    "ssh_username": "builder",
+    "ssh_password": "builder",
     "vmx_version": "13",
     "vnc_bind_address": "127.0.0.1",
     "vnc_disable_password": "false",
@@ -46,63 +55,49 @@
   },
   "builders": [
     {
-      "type": "vsphere-iso",
-
-      "vcenter_server":      "{{user `vcentre_server`}}",
-      "username":            "{{user `vcentre_username`}}",
-      "password":            "{{user `vcentre_password`}}",
-      "insecure_connection": "true",
-
-      "vm_name": "{{build_name}}-vsphere-kube-{{user `kubernetes_semver`}}",
-      "datacenter": "{{user `esxi_datacenter`}}",
-      "datastore": "{{user `esxi_datastore`}}",
-      "cluster": "{{user `esxi_cluster_name`}}",
-      "host":     "{{user `esxi_host`}}",
-
-      "guest_os_type": "ubuntu64Guest",
-
+      "name": "{{user `build_name`}}",
+      "vm_name": "{{user `build_version`}}",
+      "vmdk_name": "{{build_name}}",
+      "output_directory": "{{user `output_dir`}}",
+      "type": "vmware-iso",
+      "version": "{{user `vmx_version`}}",
+      "cpus": 1,
+      "cores": 1,
+      "memory": 2048,
+      "disk_size": 20480,
+      "disk_type_id": "{{user `disk_type_id`}}",
+      "disk_adapter_type": "scsi",
+      "boot_wait": "{{user `boot_wait`}}",
+      "http_directory": "./packer/ova/linux/{{user `distro_name`}}/http/",
+      "guest_os_type": "{{user `guest_os_type`}}",
+      "headless": "{{user `headless`}}",
+      "iso_url": "{{user `iso_url`}}",
+      "iso_checksum": "{{user `iso_checksum`}}",
+      "iso_checksum_type": "{{user `iso_checksum_type`}}",
+      "communicator": "ssh",
       "ssh_username": "{{user `ssh_username`}}",
-      "ssh_password": "{{user `ssh_username`}}",
-      "ssh_timeout": "30m",
-
-      "CPUs":             2,
-      "RAM":              1024,
-      "RAM_reserve_all": true,
-
-      "disk_controller_type":  "pvscsi",
-      "disk_size":        32768,
-      "disk_thin_provisioned": true,
-
-      "network_card": "vmxnet3",
-
-      "iso_paths": [
-            "{{user `iso_path`}}"
-      ],
-      "floppy_files": [
-        "{{template_dir}}/linux/{{user `os_name`}}/http/base/preseed.cfg"
-      ],
+      "ssh_password": "{{user `ssh_password`}}",
+      "ssh_timeout": "4h",
       "boot_command": [
-        "<enter><wait><f6><wait><esc><wait>",
-        "<bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>",
-        "<bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>",
-        "<bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>",
-        "<bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>",
-        "<bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>",
-        "<bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>",
-        "<bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>",
-        "<bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>",
-        "<bs><bs><bs>",
-        "/install/vmlinuz",
-        " initrd=/install/initrd.gz",
-        " auto=true",
-        " priority=critical",
-        " console-setup/ask_detect=false",
-        "console-setup/layoutcode=us console-setup/modelcode=pc105 debconf/frontend=noninteractive debian-installer=en_US fb=false",
-        "kbd-chooser/method=us keyboard-configuration/layout=USA keyboard-configuration/variant=USA locale=en_US netcfg/get_domain=local netcfg/get_hostname=localhost",
-        " locale=en_US",
-        " file=/media/preseed.cfg",
-        "<enter>"
-      ]
+        "{{user `boot_command_prefix`}}",
+        "http://{{ .HTTPIP }}:{{ .HTTPPort }}",
+        "{{user `boot_command_suffix`}}"
+      ],
+      "shutdown_command": "echo '{{user `ssh_password`}}' | sudo -S -E sh -c 'usermod -L {{user `ssh_username`}} && {{user `shutdown_command`}}'",
+      "skip_compaction": "{{user `skip_compaction`}}",
+      "vnc_bind_address": "{{user `vnc_bind_address`}}",
+      "vnc_port_min": "{{user `vnc_port_min`}}",
+      "vnc_port_max": "{{user `vnc_port_max`}}",
+      "remote_type": "{{user `remote_type`}}",
+      "remote_host": "{{user `remote_host`}}",
+      "remote_datastore": "{{user `remote_datastore`}}",
+      "remote_username": "{{user `remote_username`}}",
+      "remote_password": "{{user `remote_password`}}",
+      "vnc_disable_password": "{{user `vnc_disable_password`}}",
+      "format": "{{user `format`}}",
+      "vmx_data": {
+        "ethernet0.networkName": "{{user `network`}}"
+      }
     }
   ],
   "provisioners": [
@@ -115,7 +110,47 @@
       ],
       "extra_arguments": [
         "--extra-vars",
-        "containerd_url={{user `containerd_url`}} containerd_sha256={{user `containerd_sha256`}} disable_public_repos={{user `disable_public_repos`}} extra_repos={{user `extra_repos`}} kubernetes_cni_http_source={{user `kubernetes_cni_http_source`}} kubernetes_http_source={{user `kubernetes_http_source`}} kubernetes_container_registry={{user `kubernetes_container_registry`}} kubernetes_rpm_repo={{user `kubernetes_rpm_repo`}} kubernetes_rpm_gpg_key={{user `kubernetes_rpm_gpg_key`}} kubernetes_rpm_gpg_check={{user `kubernetes_rpm_gpg_check`}} kubernetes_deb_repo={{user `kubernetes_deb_repo`}} kubernetes_deb_gpg_key={{user `kubernetes_deb_gpg_key`}} kubernetes_cni_deb_version={{user `kubernetes_cni_deb_version`}} kubernetes_cni_rpm_version={{user `kubernetes_cni_rpm_version`}} kubernetes_cni_semver={{user `kubernetes_cni_semver`}} kubernetes_cni_source_type={{user `kubernetes_cni_source_type`}} kubernetes_semver={{user `kubernetes_semver`}} kubernetes_source_type={{user `kubernetes_source_type`}} kubernetes_deb_version={{user `kubernetes_deb_version`}} kubernetes_rpm_version={{user `kubernetes_rpm_version`}} reenable_public_repos={{user `reenable_public_repos`}} remove_extra_repos={{user `remove_extra_repos`}}"
+        "{{user `ansible_common_vars`}}",
+        "--extra-vars",
+        "{{user `ansible_extra_vars`}}"
+      ]
+   }
+  ],
+  "post-processors": [
+    {
+      "type": "manifest",
+      "output": "{{user `output_dir`}}/packer-manifest.json",
+      "strip_path": true,
+      "custom_data": {
+        "build_timestamp": "{{user `build_timestamp`}}",
+        "build_date": "{{isotime}}",
+        "containerd_version": "{{user `containerd_version`}}",
+        "guest_os_type": "{{user `guest_os_type`}}",
+        "kubernetes_cni_semver": "{{user `kubernetes_cni_semver`}}",
+        "kubernetes_semver": "{{user `kubernetes_semver`}}",
+        "kubernetes_source_type": "{{user `kubernetes_source_type`}}",
+        "iso_checksum": "{{user `iso_checksum`}}",
+        "iso_checksum_type": "{{user `iso_checksum_type`}}",
+        "iso_url": "{{user `iso_url`}}",
+        "os_name": "{{user `os_display_name`}}"
+      }
+    },
+    {
+      "name": "esx",
+      "type": "shell-local",
+      "inline": [
+        "cd {{user `output_dir`}}",
+        "tar xf {{user `build_version`}}.ova",
+        "rm {{user `build_version`}}.ova",
+        "GIT_VERSION=`git describe --dirty` ../../hack/image-build-ova.py --vmx {{user `vmx_version`}} --eula ../../hack/ovf_eula.txt --vmdk_file {{user `build_version`}}-disk1.vmdk"
+      ]
+    },
+    {
+      "name": "local",
+      "type": "shell-local",
+      "inline": [
+        "GIT_VERSION=`git describe --dirty` ./hack/image-build-ova.py --vmx {{user `vmx_version`}} --eula ./hack/ovf_eula.txt {{user `output_dir`}}",
+        "./hack/image-post-create-config.sh {{user `output_dir`}}"
       ]
     }
   ]

@@ -17,11 +17,9 @@ common_rpms:
 - conntrack-tools
 - curl
 - ebtables
-- nfs-utils
 - ntp
 - open-vm-tools
-- python
-- python-pip
+- python2-pip
 - python-netifaces
 - python-requests
 - socat
@@ -29,23 +27,46 @@ common_rpms:
 common_extra_rpms:
 - kernel-devel
 common_debs:
-- openssh-client
-- openssh-server
-- python
-- python3-pip
 - apt-transport-https
+- conntrack
+- conntrackd
+- curl
 - ebtables
-- socat
-- ntp
 - jq
-- nfs-client
+- gnupg
+- libnetfilter-acct1
+- libnetfilter-cttimeout1
+- libnetfilter-log1
+- linux-cloud-tools-virtual
+- linux-tools-virtual
+- ntp
+- open-vm-tools
+- python3-distutils
+- python3-netifaces
+- python3-pip
+- socat
+
+common_photon_rpms:
+- conntrack-tools
+- distrib-compat
+- ebtables
+- jq
+- net-tools
+- ntp
+- openssl-c_rehash
+- python-netifaces
+- python3-pip
+- python-requests
+- socat
+- tar
+- unzip
 
 common_pinned_debs: []
-common_extra_debs: []
 common_redhat_epel_rpm: "https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm"
 disable_public_repos: false
+extra_debs: ""
+extra_rpms: ""
 extra_repos: ""
-common_photon_rpms: "python3-pip python-requests ebtables socat ntp jq nfs-utils net-tools conntrack-tools distrib-compat"
 #photon does not have backward compatibility for legacy distro behavior for sysctl.conf by default
 #as it uses systemd-sysctl. set this var so we can use for sysctl conf file value.
 sysctl_conf_file: "{{ '/etc/sysctl.d/99-sysctl.conf' if ansible_os_family == 'VMware Photon OS' else '/etc/sysctl.conf' }}"

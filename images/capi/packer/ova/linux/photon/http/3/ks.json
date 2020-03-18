@@ -1,49 +1,29 @@
 {
-    "hostname": "photonos.vm",
-    "password":
-        {
-            "crypted": false,
-            "text": "photon"
-        },
+    "hostname": "localhost",
+    "password": {
+        "crypted": false,
+        "text": "builder"
+    },
     "disk": "/dev/sda",
-    "type": "minimal",
-    "additional_packages":[
-      "minimal",
-      "shadow",
-      "ca-certificates",
-      "conntrack-tools",
-      "curl",
-      "ebtables",
-      "gzip",
-      "jq",
-      "libnetfilter_conntrack",
-      "libnetfilter_cthelper",
-      "libnetfilter_cttimeout",
-      "libnetfilter_queue",
-      "nfs-utils",
-      "nginx",
-      "ntp",
-      "openssh-clients",
-      "openssh-server",
-      "python-netifaces",
-      "python-requests",
-      "python-pip",
-      "sed",
-      "socat",
-      "sudo",
-      "tar",
-      "unzip",
-      "vim"
+    "packages": [
+        "minimal",
+        "linux",
+        "initramfs"
+    ],
+    "additional_packages": [
+        "openssh-server",
+        "sudo"
     ],
     "postinstall": [
-                    "#!/bin/sh",
-                    "useradd -U --groups  wheel photon && echo 'photon:photon' | chpasswd",
-                    "systemctl disable nginx",
-                    "systemctl enable sshd",
-                    "echo 'photon ALL=(ALL) NOPASSWD: ALL' >/etc/sudoers.d/photon",
-                    "chmod 440 /etc/sudoers.d/photon",
-                    "tdnf clean all",
-                    "swapoff -a",
-                    "rm -f /swapfile"
-                   ]
+        "#!/bin/sh",
+        "useradd -U -d /home/builder -m --groups wheel builder && echo 'builder:builder' | chpasswd",
+        "echo 'builder ALL=(ALL) NOPASSWD: ALL' >/etc/sudoers.d/builder",
+        "chmod 440 /etc/sudoers.d/builder",
+        "systemctl enable sshd",
+        "systemctl disable docker.service",
+        "systemctl mask docker.service",
+        "tdnf clean all",
+        "swapoff -a",
+        "rm -f /swapfile"
+    ]
 }

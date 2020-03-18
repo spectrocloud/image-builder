@@ -37,16 +37,9 @@
   when: ansible_os_family == "RedHat"
 
 - name: Install cloud-init and tools for VMware Photon OS
-  block:
-    - name: Install cloud-init packages
-      command: tdnf install {{ packages }} -y
-      vars:
-        packages: "cloud-init cloud-utils python3-netifaces"
-    - name: copy cloud-init 19.1-2 rpm
-      command: curl -LO https://vmware.bintray.com/photon_dev_x86_64/noarch/cloud-init-19.1-2.ph3.noarch.rpm
-
-    - name: Update cloud-init to 19.1-2.ph3
-      command: rpm -Uvh ./cloud-init-19.1-2.ph3.noarch.rpm
+  command: tdnf install {{ packages }} -y
+  vars:
+    packages: "cloud-init cloud-utils python3-netifaces"
   when: ansible_os_family == "VMware Photon OS"
 
 - name: Download cloud-init datasource for VMware Guestinfo
@@ -56,11 +49,20 @@
 
 - name: Execute cloud-init-vmware.sh
   shell: bash -o errexit -o pipefail /tmp/cloud-init-vmware.sh
+  environment:
+    REPO_SLUG: '{{ guestinfo_datasource_slug }}'
+    GIT_REF:   '{{ guestinfo_datasource_ref }}'
 
 - name: Remove cloud-init-vmware.sh
   file:
     path:  /tmp/cloud-init-vmware.sh
     state: absent
+
+- name: Remove cloud-init /etc/cloud/cloud.cfg.d/99-disable-networking-config.cfg
+  file:
+    path: /etc/cloud/cloud.cfg.d/99-disable-networking-config.cfg
+    state: absent
+  when: ansible_os_family == "VMware Photon OS"
 
 #- name: Unlock password
 #  replace:
@@ -74,3 +76,10 @@
     dest:  /usr/lib/cloud-init
     state: link
   when: ansible_os_family == "RedHat"
+
+- name: Disable Hyper-V KVP protocol daemon on Ubuntu
+  systemd:
+    name: hv-kvp-daemon
+    state: stopped
+    enabled: false
+  when: ansible_os_family == "Debian"
