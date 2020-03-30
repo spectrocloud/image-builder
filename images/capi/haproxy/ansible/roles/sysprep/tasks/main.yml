@@ -17,6 +17,14 @@
     last_log_mode:   "0644"
     machine_id_mode: "0444"
 
+- name: Remove grub dir
+  file:
+    path: "/etc/default/grub.d"
+    state: absent
+
+- name: Update grub
+  command: "update-grub"
+
 - name: Set hostname
   command: hostnamectl set-hostname localhost.local
 
