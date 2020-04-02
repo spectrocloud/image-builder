@@ -23,7 +23,7 @@
     upgrade: dist
 
 - name: Install cloud-init packages
-  command: apt install -y cloud-init cloud-utils python3-netifaces python3-pip haproxy
+  command: apt install -y cloud-init cloud-utils python3-netifaces python3-pip
 
 - name: Download cloud-init datasource for VMware Guestinfo
   get_url:
