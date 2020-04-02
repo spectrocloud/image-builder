@@ -12,6 +12,17 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 ---
+- name: Add the haproxy repo
+  apt_repository:
+    repo: ppa:vbernat/haproxy-2.0
+    update_cache: True
+    state: present
+
+- name: Install haproxy
+  apt:
+    name: haproxy
+    state: present
+
 - name: Download dataplaneapi
   get_url:
     url: '{{ dataplane_url }}'
