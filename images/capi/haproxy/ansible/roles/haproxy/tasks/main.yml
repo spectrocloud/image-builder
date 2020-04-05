@@ -23,21 +23,28 @@
     name: haproxy
     state: present
 
+- name: Remove softlink of haproxy from /etc/systemd/system/multi-user.target.wants
+  file:
+    state: absent
+    path: "/etc/systemd/system/multi-user.target.wants/haproxy.service"
+
 - name: Download dataplaneapi
   get_url:
     url: '{{ dataplane_url }}'
     dest: /usr/local/bin/dataplaneapi
     mode: 0755
 
-- name: Create haproxy service drop-in directory
-  file:
-    path: /etc/systemd/system/haproxy.service.d
-    state: directory
-
-- name: Create haproxy cloud-init drop-in file
+- name: Copy haproxy.service to /etc/systemd/system
   copy:
-    src: files/etc/systemd/system/haproxy.service.d/cloud-init.conf
-    dest: /etc/systemd/system/haproxy.service.d/cloud-init.conf
+    src: /lib/systemd/system/haproxy.service
+    dest: /etc/systemd/system/haproxy.service
+    remote_src: yes
     owner: root
     group: root
     mode: 0644
+
+- name: set WantedBy with cloud-init.target
+  replace:
+    path: /etc/systemd/system/haproxy.service
+    regexp: 'WantedBy=multi-user.target'
+    replace: 'WantedBy=cloud-init.target'
