@@ -43,8 +43,20 @@
     group: root
     mode: 0644
 
+- name: set After with cloud-final.service
+  replace:
+    path: /etc/systemd/system/haproxy.service
+    regexp: 'After=network.target rsyslog.service'
+    replace: 'After=network.target rsyslog.service cloud-final.service'
+
 - name: set WantedBy with cloud-init.target
   replace:
     path: /etc/systemd/system/haproxy.service
     regexp: 'WantedBy=multi-user.target'
     replace: 'WantedBy=cloud-init.target'
+
+- name: enable haproxy service and ensure it is not masked
+  systemd:
+    name: haproxy
+    enabled: yes
+    masked: no
