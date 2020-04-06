@@ -41,3 +41,8 @@
     path:  /tmp/cloud-init-vmware.sh
     state: absent
 
+- name: Create a symbolic link for /bin/systemctl
+  file:
+    src: /bin/systemctl
+    dest: /usr/bin/systemctl
+    state: link
