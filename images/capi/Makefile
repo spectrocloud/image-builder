@@ -132,7 +132,7 @@ ESX_BUILD_NAMES			:=	$(addprefix esx-,$(OVA_BUILD_NAMES))
 
 AMI_BUILD_NAMES			?=	ami-default
 GCE_BUILD_NAMES			?=	gce-default
-AZURE_BUILD_NAMES		?=	azure-sig-ubuntu-1804 azure-vhd-ubuntu-1804
+AZURE_BUILD_NAMES		?=	azure-sig-ubuntu-1804 azure-ubuntu
 
 DO_BUILD_NAMES 			?=	do-default
 
@@ -190,7 +190,7 @@ $(OVA_CLEAN_TARGETS):
 build-ami-default: ## Builds the AMI default image
 
 build-azure-sig-ubuntu-1804: ## Builds Ubuntu 18.04 Azure managed image in Shared Image Gallery
-build-azure-vhd-ubuntu-1804: ## Builds Ubuntu 18.04 VHD image for Azure
+build-azure-ubuntu: ## Builds Ubuntu 18.04 VHD image for Azure
 
 build-do-default: ## Builds the DigitalOcean snapshot default image
 
