@@ -15,6 +15,7 @@
 - name: install Azure clients
   pip:
     name: "{{ packages }}"
+    version: 2.2.0
   vars:
     packages:
       - azure-cli
