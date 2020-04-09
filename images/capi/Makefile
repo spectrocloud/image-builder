@@ -73,6 +73,14 @@ deps-ova:
 	hack/ensure-packer.sh
 
 ## --------------------------------------
+## Packer azure Environment Variables
+## --------------------------------------
+export AZURE_CLIENT_ID := $(shell cat ./packer/azure/azure-config.json | jq -r '.client_id')
+export AZURE_CLIENT_SECRET := $(shell cat ./packer/azure/azure-config.json | jq -r '.client_secret')
+export AZURE_TENANT_ID := $(shell cat ./packer/azure/azure-config.json | jq -r '.azure_tenant_id')
+export AZURE_SUBSCRIPTION_ID := $(shell cat ./packer/azure/azure-config.json | jq -r '.subscription_id')
+
+## --------------------------------------
 ## Packer flags
 ## --------------------------------------
 
