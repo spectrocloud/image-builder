@@ -37,7 +37,7 @@
   },
   "builders": [
     {
-      "name": "ubuntu",
+      "name": "{{user `os_name`}}",
       "type": "azure-arm",
       "os_type": "Linux",
       "image_publisher": "{{user `azure_image_publisher`}}",
