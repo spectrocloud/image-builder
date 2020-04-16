@@ -55,9 +55,8 @@
       "ssh_username": "packer",
       "azure_tags": {
         "build_timestamp": "{{user `build_timestamp`}}",
-        "distribution": "ubuntu",
-        "distribution_release": "bionic",
-        "distribution_version": "1804",
+        "distribution": "{{user `os_name`}}",
+        "distribution_version": "{{user `os_image_version`}}",
         "kubernetes_version": "{{user `kubernetes_semver`}}"
       }
     }
