@@ -40,9 +40,9 @@
       "name": "{{user `os_name`}}",
       "type": "azure-arm",
       "os_type": "Linux",
-      "image_publisher": "{{user `azure_image_publisher`}}",
-      "image_offer": "{{user `azure_image_offer`}}",
-      "image_sku": "{{user `azure_image_sku`}}",
+      "image_publisher": "{{user `source_image_publisher`}}",
+      "image_offer": "{{user `source_image_offer`}}",
+      "image_sku": "{{user `source_image_sku`}}",
       "subscription_id": "{{user `subscription_id`}}",
       "client_id": "{{user `client_id`}}",
       "client_secret": "{{user `client_secret`}}",
@@ -51,38 +51,6 @@
       "capture_container_name": "{{user `capture_container_name`}}",
       "capture_name_prefix": "{{user `azure_image_name`}}",
       "storage_account": "{{user `storage_account_name`}}",
-      "location": "{{user `azure_location`}}",
-      "ssh_username": "packer",
-      "azure_tags": {
-        "build_timestamp": "{{user `build_timestamp`}}",
-        "distribution": "ubuntu",
-        "distribution_release": "bionic",
-        "distribution_version": "1804",
-        "kubernetes_version": "{{user `kubernetes_semver`}}"
-      }
-    },
-    {
-      "name": "sig-ubuntu-1804",
-      "type": "azure-arm",
-      "os_type": "Linux",
-      "image_publisher": "Canonical",
-      "image_offer": "UbuntuServer",
-      "image_sku": "18.04-LTS",
-      "subscription_id": "{{user `subscription_id`}}",
-      "client_id": "{{user `client_id`}}",
-      "client_secret": "{{user `client_secret`}}",
-      "vm_size": "{{user `vm_size`}}",
-      "managed_image_name": "{{user `azure_image_name`}}",
-      "managed_image_resource_group_name": "{{user `resource_group_name`}}",
-      "shared_image_gallery_destination": {
-        "resource_group": "{{user `resource_group_name`}}",
-        "gallery_name": "{{user `shared_image_gallery_name`}}",
-        "image_name": "{{user `image_name`}}",
-        "image_version": "0.3.{{user `build_timestamp`}}",
-        "replication_regions": [
-          "{{user `replication_regions`}}"
-        ]
-      },
       "location": "{{user `azure_location`}}",
       "ssh_username": "packer",
       "azure_tags": {
