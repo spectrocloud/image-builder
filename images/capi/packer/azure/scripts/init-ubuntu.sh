@@ -22,6 +22,11 @@ then
    then
      echo "create resource group : $RESOURCE_GROUP_NAME"
      az group create -n ${RESOURCE_GROUP_NAME} -l ${AZURE_LOCATION} > /dev/null 2>&1
+     if [ $? -ne 0 ]
+     then
+       echo "failed to create resource group $RESOURCE_GROUP_NAME"
+       exit 1
+     fi
      echo "resource group $RESOURCE_GROUP_NAME created"
    else
      echo "resource group $RESOURCE_GROUP_NAME already present"
@@ -36,7 +41,12 @@ then
   then
     echo "create storage account : $STORAGE_ACCOUNT_NAME"
     az storage account create -n ${STORAGE_ACCOUNT_NAME} -g ${RESOURCE_GROUP_NAME} > /dev/null 2>&1
-    echo "storage account: $STORAGE_ACCOUNT_NAME create"
+    if [ $? -ne 0 ]
+    then
+      echo "failed to create storage account $STORAGE_ACCOUNT_NAME"
+      exit 1
+    fi
+    echo "storage account: $STORAGE_ACCOUNT_NAME created"
   else
     echo "storage account: $STORAGE_ACCOUNT_NAME already present"
   fi
