@@ -12,7 +12,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 ---
+- import_tasks: redhat.yml
+  when: ansible_os_family == "RedHat"
+
 - name: install Azure clients
+  when: ansible_os_family == "Debian"
   pip:
     name: "{{ packages }}"
     version: 2.2.0
