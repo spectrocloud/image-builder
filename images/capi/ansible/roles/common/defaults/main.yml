@@ -24,8 +24,6 @@ common_rpms:
 - python-requests
 - socat
 - yum-utils
-common_extra_rpms:
-- kernel-devel
 common_debs:
 - apt-transport-https
 - conntrack
