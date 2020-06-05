@@ -68,6 +68,7 @@
     - cloud-config
     - cloud-init
     - cloud-init-local
+  when: ansible_os_family != "Flatcar"
 
 - name: Create cloud-init config file
   copy:
@@ -76,6 +77,7 @@
     owner: root
     group: root
     mode: 0644
+  when: ansible_os_family != "Flatcar"
 
 - name: set cloudinit feature flags
   copy:

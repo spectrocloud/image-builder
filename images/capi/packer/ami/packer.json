@@ -5,6 +5,7 @@
     "ami_regions": "ap-south-1,eu-west-3,eu-west-2,eu-west-1,ap-northeast-2,ap-northeast-1,sa-east-1,ca-central-1,ap-southeast-1,ap-southeast-2,eu-central-1,us-east-1,us-east-2,us-west-1,us-west-2",
     "ami_users": "",
     "ansible_common_vars": "",
+    "ansible_distribution": "",
     "ansible_extra_vars": "",
     "aws_access_key": "",
     "aws_profile": "",
@@ -13,6 +14,7 @@
     "containerd_version": null,
     "containerd_sha256": null,
     "containerd_url": "https://github.com/containerd/containerd/releases/download/v{{user `containerd_version`}}/cri-containerd-cni-{{user `containerd_version`}}-linux-amd64.tar.gz",
+    "containerd_cri_socket": "/var/run/containerd/containerd.sock",
     "crictl_version": null,
     "crictl_url": "https://github.com/kubernetes-sigs/cri-tools/releases/download/v{{user `crictl_version`}}/crictl-v{{user `crictl_version`}}-linux-amd64.tar.gz",
     "build_timestamp": "{{timestamp}}",
@@ -39,6 +41,7 @@
     "kubernetes_semver": null,
     "kubernetes_source_type": null,
     "manifest_output": "manifest.json",
+    "python_path": "",
     "skip_profile_validation": "false",
     "snapshot_groups": "all",
     "snapshot_users": "",
@@ -114,6 +117,14 @@
         "while [ ! -f /var/lib/cloud/instance/boot-finished ]; do echo 'Waiting for cloud-init...'; sleep 1; done",
         "sudo apt-get -qq update && sudo DEBIAN_FRONTEND=noninteractive apt-get -qqy install python python-pip"
       ]
+    },
+    {
+      "type": "shell",
+      "environment_vars": [
+        "BUILD_NAME={{user `build_name`}}"
+      ],
+      "script": "./packer/files/bootstrap-flatcar.sh",
+      "execute_command": "sudo -S -E {{.Vars}} bash '{{.Path}}'"
     },
     {
       "type": "ansible",
