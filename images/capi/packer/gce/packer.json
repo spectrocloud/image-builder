@@ -37,9 +37,9 @@
   },
   "builders": [
     {
-      "name": "ubuntu",
+      "name": "{{user `os_name`}}",
       "type": "googlecompute",
-      "project_id": "{{ user `project_id` }}",
+      "project_id": "{{ user `gcp_project_id` }}",
       "machine_type": "{{ user `machine_type` }}",
       "source_image_family": "{{ user `gcp_source_image_family` }}",
       "image_name": "{{ user `image_name` }}",
@@ -57,16 +57,6 @@
     }
   ],
   "provisioners": [
-    {
-      "type": "shell",
-      "inline": [
-        "while [ ! -f /var/lib/cloud/instance/boot-finished ]; do echo 'Waiting for cloud-init...'; sleep 1; done",
-        "sudo apt-get -qq update && sudo DEBIAN_FRONTEND=noninteractive apt-get -qqy install python python-pip"
-      ],
-      "only": [
-        "ubuntu"
-      ]
-    },
     {
       "type": "ansible",
       "playbook_file": "./ansible/playbook.yml",
