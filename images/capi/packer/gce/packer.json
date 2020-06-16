@@ -37,15 +37,15 @@
   },
   "builders": [
     {
-      "name": "ubuntu-1804",
+      "name": "ubuntu",
       "type": "googlecompute",
       "project_id": "{{ user `project_id` }}",
       "machine_type": "{{ user `machine_type` }}",
-      "source_image_family": "{{ user `source_image_family` }}",
-      "image_name": "cluster-api-ubuntu-1804-{{user `kubernetes_semver` | clean_resource_name}}-{{user `build_timestamp`}}",
-      "image_family": "capi-ubuntu-1804-k8s-{{user `kubernetes_series` | clean_resource_name}}",
-      "zone": "{{ user `zone` }}",
-      "ssh_username": "ubuntu",
+      "source_image_family": "{{ user `gcp_source_image_family` }}",
+      "image_name": "{{ user `image_name` }}",
+      "image_family": "spectro-{{ user `os_name` }}",
+      "zone": "{{ user `gcp_zone` }}",
+      "ssh_username": "{{ user `os_name` }}",
       "labels": {
         "build_timestamp": "{{user `build_timestamp`}}",
         "source_ami": "{{user `ubuntu_18_04_ami`}}",
@@ -64,7 +64,7 @@
         "sudo apt-get -qq update && sudo DEBIAN_FRONTEND=noninteractive apt-get -qqy install python python-pip"
       ],
       "only": [
-        "ubuntu-1804"
+        "ubuntu"
       ]
     },
     {
