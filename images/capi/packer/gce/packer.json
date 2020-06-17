@@ -40,6 +40,7 @@
       "name": "{{user `os_name`}}",
       "type": "googlecompute",
       "project_id": "{{ user `gcp_project_id` }}",
+      "account_file": "{{ user `gcp_account_file` }}",
       "machine_type": "{{ user `machine_type` }}",
       "source_image_family": "{{ user `gcp_source_image_family` }}",
       "image_name": "{{ user `image_name` }}",
