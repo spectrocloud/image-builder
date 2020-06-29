@@ -16,21 +16,37 @@
   when: ansible_os_family == "RedHat"
 
 - name: install Azure clients
-  when: ansible_os_family == "Debian"
   pip:
+    executable: pip3
     name: "{{ packages }}"
-    version: 2.2.0
   vars:
     packages:
       - azure-cli
 
-- name: update NetworkManager config
-  when: ansible_os_family == "RedHat"
-  copy:
-    src: files/etc/NetworkManager/conf.d/calico.conf
-    dest: /etc/NetworkManager/conf.d/calico.conf
-    owner: root
-    group: root
-    mode: 0644
+- name: Ansible apt install chrony
+  apt:
+    name: chrony
+    state: present
+  when: ansible_distribution == "Ubuntu"
+  
+- name: Configure PTP
+  lineinfile:
+    path: /etc/chrony/chrony.conf
+    create: yes
+    line: refclock PHC /dev/ptp0 poll 3 dpoll -2 offset 0
+  when: ansible_distribution == "Ubuntu"  
 
+- name: Ensure makestep parameter set as per Azure recommendation
+  lineinfile:
+    path: /etc/chrony/chrony.conf
+    regexp: '^makestep'
+    line: makestep 1.0 -1
+  when: ansible_distribution == "Ubuntu"  
 
+- name: Enable chrony.service
+  systemd:
+    enabled: yes
+    state: started
+    daemon_reload: yes
+    name: chrony.service
+  when: ansible_distribution == "Ubuntu"  

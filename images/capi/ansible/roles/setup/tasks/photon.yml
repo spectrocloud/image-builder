@@ -1,0 +1,47 @@
+# Copyright 2019 The Kubernetes Authors.
+
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+
+# http://www.apache.org/licenses/LICENSE-2.0
+
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+---
+- name: add bash_profile
+  template:
+    dest: /home/builder/.bash_profile
+    src: photon_bash_profile
+    owner: builder
+    group: builder
+
+- import_tasks: rpm_repos.yml
+
+- name: Perform a tdnf distro-sync
+  command: tdnf distro-sync -y --refresh
+  register: distro
+  changed_when: '"Nothing to do" not in distro.stderr'
+
+  # When the linux package is upgraded on Photon, the current /lib/modules
+  # folder is removed, causing future package installs to file if they involve
+  # kmods, which a lot of our future packages do. A reboot fixes this. In the
+  # future it might be nice to only reboot if that package was upgraded, but
+  # a reboot of Photon is generally very fast so this is fine for now.
+- name: Reboot after distro sync
+  reboot:
+  when: distro.changed
+
+- name: Concatenate the Photon RPMs
+  set_fact:
+    photon_rpms: "{{ rpms | join(' ') }}"
+
+- name: install baseline dependencies
+  command: tdnf install {{ photon_rpms }} -y
+
+- name: install extra RPMs
+  command: tdnf install {{ extra_rpms }} -y
+  when: extra_rpms != ""
