@@ -52,6 +52,7 @@ common_photon_rpms:
 - net-tools
 - ntp
 - openssl-c_rehash
+- open-vm-tools
 - python-netifaces
 - python3-pip
 - python-requests
@@ -68,3 +69,6 @@ extra_repos: ""
 #photon does not have backward compatibility for legacy distro behavior for sysctl.conf by default
 #as it uses systemd-sysctl. set this var so we can use for sysctl conf file value.
 sysctl_conf_file: "{{ '/etc/sysctl.d/99-sysctl.conf' if ansible_os_family == 'VMware Photon OS' else '/etc/sysctl.conf' }}"
+
+containerd_pause_image: "k8s.gcr.io/pause:3.2"
+containerd_additional_settings: null

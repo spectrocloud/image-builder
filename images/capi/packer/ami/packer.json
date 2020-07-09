@@ -1,5 +1,6 @@
 {
   "variables": {
+    "ami_description": "Cluster API base image designed for {{user `kubernetes_semver`}}",
     "ansible_common_vars": "",
     "ansible_extra_vars": "",
     "aws_access_key": "",
@@ -13,6 +14,11 @@
     "kms_key_id": "",
     "extra_debs": "",
     "extra_repos": "",
+    "extra_rpms": "",
+    "goss_url": "https://github.com/aelsabbahy/goss/releases/download/v0.3.2/goss-linux-amd64",
+    "iam_instance_profile": "",
+    "ib_version": "{{env `IB_VERSION`}}",
+    "kms_key_id": "",
     "containerd_version": null,
     "containerd_sha256": null,
     "containerd_url": "https://storage.googleapis.com/cri-containerd-release/cri-containerd-{{user `containerd_version`}}.linux-amd64.tar.gz",
@@ -24,6 +30,7 @@
     "kubernetes_semver": null,
     "kubernetes_source_type": null,
     "kubernetes_http_source": null,
+    "kubernetes_load_additional_imgs": null,
     "kubernetes_rpm_version": null,
     "kubernetes_deb_version": null,
     "kubernetes_rpm_repo": null,
@@ -35,8 +42,11 @@
     "existing_ansible_ssh_args": "{{env `ANSIBLE_SSH_ARGS`}}",
     "ami_groups": "all",
     "ami_users": "",
+    "manifest_output": "manifest.json",
     "reenable_public_repos": "true",
+    "redhat_epel_rpm": "https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm",
     "remove_extra_repos": "false",
+    "skip_profile_validation": "false",
     "snapshot_groups": "all",
     "snapshot_users": "",
     "ami_regions": "us-west-2",
@@ -55,24 +65,28 @@
       "ami_name": "{{user `ami_name`}}",
       "ami_groups": "{{user `ami_groups`}}",
       "ami_users": "{{user `ami_users`}}",
+      "ami_description": "{{user `ami_description`}}",
       "snapshot_groups": "{{user `snapshot_groups`}}",
       "snapshot_users": "{{user `snapshot_users`}}",
       "encrypt_boot": "{{user `encrypted`}}",
       "kms_key_id": "{{user `kms_key_id`}}",
+      "ami_product_codes": "",
       "ami_regions": "{{user `ami_regions`}}",
       "access_key": "{{user `aws_access_key`}}",
       "profile": "{{ user `aws_profile`}}",
       "region": "{{ user `aws_region` }}",
       "secret_key": "{{user `aws_secret_key`}}",
       "iam_instance_profile": "{{user `iam_instance_profile`}}",
+      "skip_profile_validation": "{{user `skip_profile_validation`}}",
       "ssh_username": "{{user `ssh_username`}}",
       "vpc_id": "{{ user `vpc_id` }}",
       "subnet_id": "{{ user `subnet_id` }}",
       "run_tags": {
-        "Name": "{{user `spectro_cluster_name`}}-source_instance"
+        "Name": "{{user `spectro_cluster_name`}}-source_instance-{{user `build_timestamp`}}"
       },
       "tags": {
         "build_timestamp": "{{user `build_timestamp`}}",
+	"containerd_version": "{{user `containerd_version`}}",
         "source_ami": "{{user `aws_source_ami_id`}}",
         "build_date": "{{isotime}}",
         "distribution": "{{user `os_name`}}",
@@ -87,7 +101,7 @@
   "provisioners": [
     {
       "type": "ansible",
-      "playbook_file": "./ansible/playbook.yml",
+      "playbook_file": "./ansible/node.yml",
       "ansible_env_vars": [
         "ANSIBLE_SSH_ARGS='{{user `existing_ansible_ssh_args`}} -o IdentitiesOnly=yes'",
         "ANSIBLE_REMOTE_TEMP='/tmp/.ansible/'"

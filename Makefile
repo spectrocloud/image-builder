@@ -26,3 +26,11 @@ $(BIN):
 
 clean:
 	rm -f dist/
+
+.PHONY: build-book
+build-book:
+	docs/book/build.sh
+
+.PHONY: serve-book
+serve-book: ## Build and serve the book with live-reloading enabled
+	$(MAKE) -C docs/book serve
