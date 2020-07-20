@@ -132,7 +132,7 @@ ESX_BUILD_NAMES			:=	$(addprefix esx-,$(OVA_BUILD_NAMES))
 
 AMI_BUILD_NAMES			?=	ami-default
 GCE_BUILD_NAMES			?=	gce-default
-AZURE_BUILD_NAMES		?=	azure-sig-ubuntu-1804 azure-ubuntu
+AZURE_BUILD_NAMES		?=	azure-sig-ubuntu-1804 azure-vhd
 
 DO_BUILD_NAMES 			?=	do-default
 
@@ -169,7 +169,7 @@ $(GCE_BUILD_TARGETS):
 
 .PHONY: $(AZURE_BUILD_TARGETS)
 $(AZURE_BUILD_TARGETS):
-	. $(abspath packer/azure/scripts/init-$(subst build-azure-,,$@).sh) && packer build $(PACKER_FLAGS) -var-file="$(abspath packer/azure/azure-config.json)" $(PACKER_VAR_FILES) packer/azure/packer.json
+	. $(abspath packer/azure/scripts/login-azure.sh) && packer build $(PACKER_FLAGS) -var-file="$(abspath packer/azure/azure-config.json)" $(PACKER_VAR_FILES) packer/azure/packer.json
 
 $(DO_BUILD_TARGETS):
 	packer build $(PACKER_FLAGS) -var-file="$(abspath packer/digitalocean/$(subst build-,,$@).json)" $(PACKER_VAR_FILES) packer/digitalocean/packer.json
