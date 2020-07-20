@@ -169,7 +169,7 @@ $(GCE_BUILD_TARGETS):
 
 .PHONY: $(AZURE_BUILD_TARGETS)
 $(AZURE_BUILD_TARGETS):
-	. $(abspath packer/azure/scripts/login-azure.sh) && packer build $(PACKER_FLAGS) -var-file="$(abspath packer/azure/azure-config.json)" $(PACKER_VAR_FILES) packer/azure/packer.json
+	. $(abspath packer/azure/scripts/azure-login.sh) && packer build $(PACKER_FLAGS) -var-file="$(abspath packer/azure/azure-config.json)" $(PACKER_VAR_FILES) packer/azure/packer.json
 
 $(DO_BUILD_TARGETS):
 	packer build $(PACKER_FLAGS) -var-file="$(abspath packer/digitalocean/$(subst build-,,$@).json)" $(PACKER_VAR_FILES) packer/digitalocean/packer.json
