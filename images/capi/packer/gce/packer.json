@@ -4,7 +4,7 @@
     "ansible_extra_vars": "",
     "project_id": "{{env `GCP_PROJECT_ID`}}",
     "build_timestamp": "{{timestamp}}",
-    "source_image_family": "ubuntu-1804-lts",
+    "source_image_family": "",
     "machine_type": "n1-standard-1",
     "disable_public_repos": "false",
     "encrypted": "false",
@@ -37,36 +37,27 @@
   },
   "builders": [
     {
-      "name": "ubuntu-1804",
+      "name": "{{user `os_name`}}",
       "type": "googlecompute",
-      "project_id": "{{ user `project_id` }}",
+      "project_id": "{{ user `gcp_project_id` }}",
+      "account_file": "{{ user `gcp_account_file` }}",
       "machine_type": "{{ user `machine_type` }}",
-      "source_image_family": "{{ user `source_image_family` }}",
-      "image_name": "cluster-api-ubuntu-1804-{{user `kubernetes_semver` | clean_resource_name}}-{{user `build_timestamp`}}",
-      "image_family": "capi-ubuntu-1804-k8s-{{user `kubernetes_series` | clean_resource_name}}",
-      "zone": "{{ user `zone` }}",
-      "ssh_username": "ubuntu",
+      "disk_size": "{{ user `gcp_disk_size` }}",
+      "source_image_family": "{{ user `gcp_source_image_family` }}",
+      "source_image": "{{ user `gcp_source_image` }}",
+      "image_name": "{{ user `image_name` }}",
+      "image_family": "spectro-{{ user `os_name` }}",
+      "zone": "{{ user `gcp_zone` }}",
+      "ssh_username": "{{ user `os_name` }}",
       "labels": {
         "build_timestamp": "{{user `build_timestamp`}}",
-        "source_ami": "{{user `ubuntu_18_04_ami`}}",
-        "distribution": "ubuntu",
-        "distribution_release": "bionic",
-        "distribution_version": "1804",
+        "distribution": "{{ user `os_name` }}",
+        "distribution_version": "{{ user `os_image_version` }}",
         "kubernetes_version": "{{user `kubernetes_semver` | clean_resource_name}}"
       }
     }
   ],
   "provisioners": [
-    {
-      "type": "shell",
-      "inline": [
-        "while [ ! -f /var/lib/cloud/instance/boot-finished ]; do echo 'Waiting for cloud-init...'; sleep 1; done",
-        "sudo apt-get -qq update && sudo DEBIAN_FRONTEND=noninteractive apt-get -qqy install python python-pip"
-      ],
-      "only": [
-        "ubuntu-1804"
-      ]
-    },
     {
       "type": "ansible",
       "playbook_file": "./ansible/playbook.yml",
