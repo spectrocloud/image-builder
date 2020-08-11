@@ -12,6 +12,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 ---
+- name: Install cloud-init packages
+  yum:
+    name: "{{ packages }}"
+    state: present
+  vars:
+    packages:
+      - cloud-init
+  when: ansible_os_family == "RedHat"
+
 - name: Download gcloud SDK
   get_url:
     url:  https://sdk.cloud.google.com/
