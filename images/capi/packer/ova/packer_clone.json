@@ -78,6 +78,7 @@
 
       "CPUs":  "{{user `cpu`}}",
       "RAM":    "{{user `ram`}}",
+      "disk_size":    "{{user `disk_size`}}",
       "RAM_reserve_all": true,
       "communicator": "{{user `communicator`}}",
       "template": "{{user `template`}}"
