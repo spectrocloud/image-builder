@@ -13,7 +13,7 @@
     "dataplane_url": "https://github.com/haproxytech/dataplaneapi/releases/download/v{{user `dataplaneapi_version`}}/dataplaneapi",
     "disable_public_repos": "false",
     "disk_type_id": "0",
-    "disk_size": 20480,
+    "disk_size": "20480",
     "existing_ansible_ssh_args": "{{env `ANSIBLE_SSH_ARGS`}}",
     "extra_debs": "",
     "extra_repos": "",
