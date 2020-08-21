@@ -35,3 +35,9 @@
     owner: root
     group: root
     mode: 0644
+
+- name: Disable service and ensure it is masked
+  systemd:
+    name: temp-disk-swapfile
+    enabled: no
+    masked: yes
