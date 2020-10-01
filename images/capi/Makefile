@@ -417,6 +417,8 @@ build-node-ova-local-base-ubuntu-1804: ## Builds Ubuntu 18.04 Base Node OVA w lo
 build-node-ova-local-base-ubuntu-2004: ## Builds Ubuntu 20.04 Base Node OVA w local hypervisor
 
 build-qemu-flatcar-stable: ## Builds Flatcar stable QEMU image
+build-qemu-flatcar-beta: ## Builds Flatcar beta QEMU image
+build-qemu-flatcar-alpha: ## Builds Flatcar alpha QEMU image
 build-qemu-ubuntu-1804: ## Builds Ubuntu 18.04 QEMU image
 build-qemu-ubuntu-2004: ## Builds Ubuntu 20.04 QEMU image
 build-qemu-all: $(QEMU_BUILD_TARGETS) ## Builds all Qemu images
