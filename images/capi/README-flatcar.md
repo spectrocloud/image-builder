@@ -50,6 +50,10 @@ channels: `alpha`, `beta`, `stable`, and `edge`. For details please refer to
 the [releases page](https://www.flatcar-linux.org/releases/).
 
 The build script will default to the latest release of the `stable` channel.
+However, as of stable 2605.6.0 with containerd 1.3, image-builder does not work
+with stable, because the containerd_url has changed completely to scheme of
+containerd 1.4. So we recommend using Flatcar `alpha` 2643.0.0 or newer with
+containerd 1.4.
 
 After provisioning concluded the script will ask you to export flatcar channel
 and release version environment variables:
@@ -81,7 +85,7 @@ Example usage:
 ```shell
 $ make build-qemu-flatcar
 or
-$ make FLATCAR_CHANNEL=beta build-qemu-flatcar
+$ make FLATCAR_CHANNEL=alpha build-qemu-flatcar
 or
 $ make FLATCAR_CHANNEL=stable FLATCAR_VERSION=2512.2.0 build-qemu-flatcar
 ```
