@@ -79,8 +79,7 @@
         "BUILD_NAME={{user `build_name`}}"
       ],
       "script": "./packer/files/bootstrap-flatcar.sh",
-      "execute_command": "sudo -S -E {{.Vars}} bash '{{.Path}}'",
-      "only": ["{{user `build_name`}}"]
+      "execute_command": "sudo -S -E {{.Vars}} bash '{{.Path}}'"
     },
     {
       "type": "ansible",
@@ -100,8 +99,7 @@
   ],
   "post-processors": [
     {
-      "type": "vagrant",
-      "only": ["{{user `build_name`}}"]
+      "type": "vagrant"
     }
   ]
 }
