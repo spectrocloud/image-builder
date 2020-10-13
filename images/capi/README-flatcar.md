@@ -88,6 +88,9 @@ or
 $ make FLATCAR_CHANNEL=alpha build-qemu-flatcar
 or
 $ make FLATCAR_CHANNEL=stable FLATCAR_VERSION=2512.2.0 build-qemu-flatcar
+or
+$ make FLATCAR_CHANNEL=alpha FLATCAR_VERSION=$(hack/image-grok-latest-flatcar-version.sh alpha) \
+  build-qemu-flatcar
 ```
 
 ## Notes
