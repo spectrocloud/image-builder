@@ -1,10 +1,7 @@
 {
-  "azure_location": "",
+  "azure_location": "{{env `AZURE_LOCATION`}}",
   "vm_size": "Standard_B2ms",
-  "subscription_id": "",
-  "client_id": "",
-  "azure_resource_group": "",
-  "storage_account_name": "",
-  "capture_container_name": "",
-  "client_secret": ""
+  "subscription_id": "{{env `AZURE_SUBSCRIPTION_ID`}}",
+  "client_id": "{{env `AZURE_CLIENT_ID`}}",
+  "client_secret": "{{env `AZURE_CLIENT_SECRET`}}"
 }

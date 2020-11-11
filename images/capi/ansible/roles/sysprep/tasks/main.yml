@@ -15,6 +15,9 @@
 - import_tasks: debian.yml
   when: ansible_os_family == "Debian"
 
+- import_tasks: flatcar.yml
+  when: ansible_os_family == "Flatcar"
+
 - import_tasks: redhat.yml
   when: ansible_os_family == "RedHat"
 
@@ -119,28 +122,37 @@
   loop:
   - { path: /root/.ssh/authorized_keys }
   - { path: "/home/{{ ansible_env.SUDO_USER }}/.ssh/authorized_keys" }
+  when: ansible_os_family != "Flatcar"
 
-- name: Disable swap partirion
-  command: swapoff -a
+- name: Remove SSH authorized users for Flatcar
+  file:
+    state: absent
+    path: "{{ item.path }}"
+  loop:
+  - { path: /root/.ssh/authorized_keys }
+  when: ansible_os_family == "Flatcar"
+
+
+- name: Truncate all remaining log files in /var/log
+  shell:
+    cmd: |
+      find /var/log -type f -iname '*.log' | xargs truncate -s 0
+  when: ansible_os_family != "Flatcar"
+
+- name: Delete all logrotated log zips
+  shell:
+    cmd: |
+      find /var/log -type f -name '*.gz' -exec rm {} +
+  when: ansible_os_family != "Flatcar"
 
 - name: Remove swapfile
   file:
-    state: absent
-    path: "/swapfile"
-
-- name: Edit fstab file to disable swap
-  shell: sed -ri '/\sswap\s/s/^#?/#/' /etc/fstab
-
-- name: Remove and recreate /var/log
-  file:
     state: "{{ item.state }}"
     path: "{{ item.path }}"
-    owner: root
-    group: root
-    mode: 0755
   loop:
-  - { path: /var/log, state: absent }
-  - { path: /var/log, state: directory }
+  - { path: /swapfile, state: absent }
+  - { path: /mnt/resource/swapfile, state: absent }
+  when: ansible_memory_mb.swap.total != 0
 
 - name: Truncate shell history
   file:

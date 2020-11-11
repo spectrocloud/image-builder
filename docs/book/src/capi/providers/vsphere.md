@@ -1,0 +1,196 @@
+# Building Images for vSphere
+
+## Hypervisor
+
+The images may be built using one of the following hypervisors:
+
+| OS | Builder | Build target |
+|----|---------|--------------|
+| Linux | VMware Workstation (vmware-iso) | build-node-ova-local-<OS> |
+| macOS | VMware Fusion (vmware-iso)| build-node-ova-local-<OS> |
+| ESXi | ESXi | build-node-ova-esx-<OS> |
+| vSphere | vSphere >= 6.5 | build-node-ova-vsphere-<OS> |
+| vSphere | vSphere >= 6.5 | build-node-ova-vsphere-base-<OS> |
+| vSphere Clone | vSphere >= 6.5 | build-node-ova-vsphere-clone-<OS> |
+| Linux | VMware Workstation (vmware-vmx) | build-node-ova-local-vmx-<OS> |
+| macOS | VMware Fusion (vmware-vmx) | build-node-ova-local-vmx-<OS> |
+
+**NOTE** If you want to build all available OS's, uses the `-all` target. If you want to build them in parallel, use `make -j`. For example, `make -j build-node-ova-local-all`.
+
+The `esxi` builder supports building against a remote VMware ESX server with [specific configuration](https://packer.io/docs/builders/vmware-iso.html#building-on-a-remote-vsphere-hypervisor) (ssh access), but is untested with this project.
+The `vsphere` builder supports building against a remote VMware vSphere using standard API.
+
+### vmware-vmx builder
+During the dev process it's uncommon for the base OS image to change, but the image building process builds the base image from the ISO every time and thus adding a significant amount of time to the build process. 
+
+To reduce the image building times during development, one can use the `build-node-ova-local-base-<OS>` target to build the base image from the ISO. By setting `source_path` variable in `vmx.json` to the `*.vmx` file from the output, it can then be re-used with the `build-node-ova-local-vmx-<OS>` build target to speed up the process. 
+
+
+### vsphere-clone builder
+`vsphere-base` builder allows you to build one time base OVAs from iso images using the kickstart process. It leaves the user `builder` intact in base OVA to be used by clone builder later. `vSphere-clone` builder builds on top of base OVA by cloning it and ansiblizing it.
+This saves time by allowing repeated iteration on base OVA without installing OS from scratch again and again. Also, it uses link cloning and `create_snapshot` feature to clone faster.
+
+### Prerequisites for vSphere builder
+
+Complete the `vsphere.json` configuration file with credentials and informations specific to the remote vSphere hypervisor used to build the `ova` file.
+This file must have the following format (`cluster` can be replace by `host`):
+```
+{
+    "vcenter_server":"FQDN of vcenter",
+    "username":"vcenter_username",
+    "password":"vcenter_password",
+    "datastore":"template_datastore",
+    "folder": "template_folder_on_vcenter",
+    "cluster": "esxi_cluster_used_for_template_creation",
+    "network": "network_attached_to_template",
+    "insecure_connection": "false"
+    "template": "base_template_used_by_clone_builder",
+    "create_snbapshot": "creates a snaphot on base OVA after building",
+    "linked_clone": "Uses link cloning in vsphere-clone builder: true, by default"
+}
+```
+
+If you prefer to use a different configuration file, you can create it with the same format and export `PACKER_VAR_FILES` environment variable containing the full path to it.
+
+## Building Images
+
+The build [prerequisites](../capi.md#prerequisites) for using `image-builder` for
+building OVAs are managed by running:
+
+```bash
+make deps-ova
+```
+
+From the `images/capi` directory, run `make build-node-ova-<hypervisor>-<OS>`, where `<hypervisor>` is your target hypervisor (`local`, `vsphere` or `esx`) and `<OS>` is the desired operating system. The available choices are listed via `make help`.
+
+### Configuration
+
+In addition to the configuration found in `images/capi/packer/config`, the `ova` directory includes several JSON files that define the configuration for the images:
+
+| File | Description |
+|------|-------------|
+| `esx.json` | Additional settings needed when building on a remote ESXi host |
+| `centos-7.json` | The settings for the CentOS 7 image |
+| `photon-3.json` | The settings for the Photon 3 image |
+| `rhel-7.json` | The settings for the RHEL 7 image |
+| `ubuntu-1804.json` | The settings for the Ubuntu 18.04 image |
+| `ubuntu-2004.json` | The settings for the Ubuntu 20.04 image |
+| `vsphere.json` | Additional settings needed when building on a remote vSphere |
+
+### RHEL
+
+When building the RHEL image, the OS must register itself with the Red Hat Subscription Manager (RHSM). To do this, the current supported method is to supply a username and password via environment variables. The two environment variables are `RHSM_USER` and `RHSM_PASS`. Although building RHEL images has been tested via this method, if an error is encountered during the build, the VM is deleted without the machine being unregistered with RHSM. To prevent this, it is recommended to build with the following command:
+
+```shell
+PACKER_FLAGS=-on-error=ask RHSM_USER=user RHSM_PASS=pass make build-node-ova-<hypervisor>-rhel-7
+```
+
+The addition of `PACKER_FLAGS=-on-error=ask` means that if an error is encountered, the build will pause, allowing you to SSH into the machine and unregister manually.
+
+### Output
+
+The images are built and located in `images/capi/output/BUILD_NAME+kube-KUBERNETES_VERSION`
+
+## Uploading Images
+
+The images are uploaded to the GCS bucket `capv-images`. The path to the image depends on the version of Kubernetes:
+
+| Build type | Upload location |
+|------------|-----------------|
+| CI | `gs://capv-images/ci/KUBERNETES_VERSION/BUILD_NAME-kube-KUBERNETES_VERSION.ova` |
+| Release | `gs://capv-images/release/KUBERNETES_VERSION/BUILD_NAME-kube-KUBERNETES_VERSION.ova` |
+
+Uploading the images requires the `gcloud` and `gsutil` programs, an active Google Cloud account, or a service account with an associated key file. The latter may be specified via the environment variable `KEY_FILE`.
+
+```shell
+hack/image-upload.py --key-file KEY_FILE BUILD_DIR
+```
+
+First the images are checksummed (SHA256). If a matching checksum already exists remotely then the image is not re-uploaded. Otherwise the images are uploaded to the GCS bucket.
+
+### Listing Available Images
+
+Once uploaded the available images may be listed using the `gsutil` program, for example:
+
+```shell
+gsutil ls gs://capv-images/release
+```
+
+### Downloading Images
+
+Images may be downloaded via HTTP:
+
+| Build type | Download location |
+|------------|-----------------|
+| CI | `http://storage.googleapis.com/capv-images/ci/KUBERNETES_VERSION/BUILD_NAME-kube-KUBERNETES_VERSION.ova` |
+| Release | `http://storage.googleapis.com/capv-images/release/KUBERNETES_VERSION/BUILD_NAME-kube-KUBERNETES_VERSION.ova` |
+
+## Testing Images
+
+### Accessing the Images
+
+#### Accessing Local VMs
+
+After the images are built, the VMs from they are built are prepped for local testing. Simply boot the VM locally with Fusion or Workstation and the machine will be initialized with cloud-init data from the `cloudinit` directory. The VMs may be accessed via SSH by using the command `hack/image-ssh.sh BUILD_DIR capv`.
+
+#### Accessing Remote VMs
+
+After deploying an image to vSphere, use `hack/image-govc-cloudinit.sh VM` to snapshot the image and update it with cloud-init data from the `cloudinit` directory. Start the VM and now it may be accessed with `ssh -i cloudinit/id_rsa.capi capv@VM_IP`.
+This hack necessitate the `govc` utility from [VMmare](https://github.com/vmware/govmomi/tree/master/govc)
+
+### Initialize a CNI
+
+As root:
+
+(copied from [containernetworking/cni](https://github.com/containernetworking/cni#how-do-i-use-cni))
+
+```shell
+mkdir -p /etc/cni/net.d
+curl -LO https://github.com/containernetworking/plugins/releases/download/v0.7.0/cni-plugins-amd64-v0.7.0.tgz
+tar -xzf cni-plugins-amd64-v0.7.0.tgz --directory /etc/cni/net.d
+cat >/etc/cni/net.d/10-mynet.conf <<EOF
+{
+    "cniVersion": "0.2.0",
+    "name": "mynet",
+    "type": "bridge",
+    "bridge": "cni0",
+    "isGateway": true,
+    "ipMasq": true,
+    "ipam": {
+        "type": "host-local",
+        "subnet": "10.22.0.0/16",
+        "routes": [
+            { "dst": "0.0.0.0/0" }
+        ]
+    }
+}
+EOF
+cat >/etc/cni/net.d/99-loopback.conf <<EOF
+{
+    "cniVersion": "0.2.0",
+    "name": "lo",
+    "type": "loopback"
+}
+EOF
+```
+
+### Run the e2e node conformance tests
+
+As a non-root user:
+
+```shell
+curl -LO https://dl.k8s.io/$(</etc/kubernetes-version)/kubernetes-test-linux-amd64.tar.gz
+tar -zxvf kubernetes-test-linux-amd64.tar.gz
+cd kubernetes/test/bin
+sudo ./ginkgo --nodes=8 --flakeAttempts=2 --focus="\[Conformance\]" --skip="\[Flaky\]|\[Serial\]|\[sig-network\]|Container Lifecycle Hook" ./e2e_node.test -- --k8s-bin-dir=/usr/bin --container-runtime=remote --container-runtime-endpoint unix:///var/run/containerd/containerd.sock --container-runtime-process-name /usr/local/bin/containerd --container-runtime-pid-file= --kubelet-flags="--cgroups-per-qos=true --cgroup-root=/ --runtime-cgroups=/system.slice/containerd.service" --extra-log="{\"name\": \"containerd.log\", \"journalctl\": [\"-u\", \"containerd\"]}"
+```
+
+## The `cloudinit` Directory
+
+The `cloudinit` contains files that:
+
+- **Are** example data used for testing
+- Are **not** included in any of the images
+- Should **not** be used in production systems
+
+For more information about how the files in the `cloudinit` directory are used, please refer to the section on [accessing the images](#accessing-the-images).

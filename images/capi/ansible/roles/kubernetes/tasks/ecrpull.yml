@@ -3,6 +3,7 @@
   template:
     dest: /etc/kubeadm.yml
     src: etc/kubeadm.yml
+    mode: 0600
 
 - name: Get images list
   shell: 'kubeadm config images list --config /etc/kubeadm.yml'
@@ -25,3 +26,4 @@
   file:
     path: /etc/kubeadm.yml
     state: absent
+  when: ansible_os_family != "Flatcar"

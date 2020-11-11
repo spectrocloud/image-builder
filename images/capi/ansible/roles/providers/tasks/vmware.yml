@@ -34,6 +34,7 @@
     packages:
     - cloud-init
     - cloud-utils-growpart
+    - python2-pip
   when: ansible_os_family == "RedHat"
 
 - name: Install cloud-init and tools for VMware Photon OS
@@ -44,8 +45,9 @@
 
 - name: Download cloud-init datasource for VMware Guestinfo
   get_url:
-    url:  https://raw.githubusercontent.com/vmware/cloud-init-vmware-guestinfo/master/install.sh
+    url:  '{{ guestinfo_datasource_script }}'
     dest: /tmp/cloud-init-vmware.sh
+    mode: 0700
 
 - name: Execute cloud-init-vmware.sh
   shell: bash -o errexit -o pipefail /tmp/cloud-init-vmware.sh
@@ -70,16 +72,17 @@
 #    regexp: '(?i)lock_passwd: True'
 #    replace: 'lock_passwd: False'
 
-#- name: Symlink /usr/libexec/cloud-init to /usr/lib/cloud-init
-#  file:
-#    src:   /usr/libexec/cloud-init
-#    dest:  /usr/lib/cloud-init
-#    state: link
-#  when: ansible_os_family == "RedHat"
-
 - name: Disable Hyper-V KVP protocol daemon on Ubuntu
   systemd:
     name: hv-kvp-daemon
     state: stopped
     enabled: false
   when: ansible_os_family == "Debian"
+
+- name: Create provider vmtools config drop-in file
+  copy:
+    src: files/etc/vmware-tools/tools.conf
+    dest: /etc/vmware-tools/tools.conf
+    owner: root
+    group: root
+    mode: 0644

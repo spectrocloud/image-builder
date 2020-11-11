@@ -16,12 +16,14 @@
   file:
     src:   "/usr/local/bin/{{ item }}"
     dest:  "/usr/bin/{{ item }}"
+    mode: 0777
     state: link
     force: yes
   loop:
   - ctr
   - crictl
   - critest
+  when: ansible_os_family != "Flatcar"
 
 - name: Create CNI directory
   file:
@@ -33,8 +35,8 @@
 
 - name: Download CNI tarball
   get_url:
-    url: "{{ kubernetes_cni_http_source }}/{{ kubernetes_cni_semver }}/cni-plugins-{{ kubernetes_goarch }}-{{ kubernetes_cni_semver }}.tgz"
-    checksum: "sha1:{{ kubernetes_cni_http_source }}/{{ kubernetes_cni_semver }}/cni-plugins-{{ kubernetes_goarch }}-{{ kubernetes_cni_semver }}.tgz.sha1"
+    url: "{{ kubernetes_cni_http_source }}/{{ kubernetes_cni_semver }}/cni-plugins-linux-{{ kubernetes_goarch }}-{{ kubernetes_cni_semver }}.tgz"
+    checksum: "{{ kubernetes_cni_http_checksum }}"
     dest: /tmp/cni.tar.gz
     mode: 0755
     owner: root
@@ -58,7 +60,7 @@
     #             and verify the associated file using the correct
     #             checksum file format
     #checksum: "sha1:{{ kubernetes_http_source }}/bin/linux/amd64/{{ item }}.sha1"
-    dest: "/usr/bin/{{ item }}"
+    dest: "{{ sysusr_prefix }}/bin/{{ item }}"
     mode: 0755
     owner: root
     group: root
@@ -72,10 +74,11 @@
     #             checksum file format
     #checksum: "sha1:{{ kubernetes_http_source }}/bin/linux/amd64/{{ item }}.sha1"
     dest: "/tmp/{{ item }}"
+    mode: 0600
   loop: "{{ kubernetes_imgs }}"
 
 - name: Load Kubernetes images
-  shell: 'CONTAINERD_NAMESPACE="k8s.io" ctr images import /tmp/{{ item }}'
+  shell: 'CONTAINERD_NAMESPACE="k8s.io" /usr/bin/ctr --address={{ containerd_cri_socket }} images import /tmp/{{ item }}'
   loop: "{{ kubernetes_imgs }}"
 
 - name: Remove Kubernetes images
@@ -111,23 +114,23 @@
 - name: Create kubelet drop-in directory
   file:
     state: directory
-    path: /usr/lib/systemd/system/kubelet.service.d
+    path: "{{ systemd_prefix }}/system/kubelet.service.d"
     mode: 0755
     owner: root
     group: root
 
 - name: Create kubelet kubeadm drop-in file
-  copy:
-    src: files/usr/lib/systemd/system/kubelet.service.d/10-kubeadm.conf
-    dest: /usr/lib/systemd/system/kubelet.service.d/10-kubeadm.conf
+  template:
+    src: usr/lib/systemd/system/kubelet.service.d/10-kubeadm.conf
+    dest: "{{ systemd_prefix }}/system/kubelet.service.d/10-kubeadm.conf"
     owner: root
     group: root
     mode: 0644
 
 - name: Create kubelet systemd file
-  copy:
-    src: files/usr/lib/systemd/system/kubelet.service
-    dest: /usr/lib/systemd/system/kubelet.service
+  template:
+    src: usr/lib/systemd/system/kubelet.service
+    dest: "{{ systemd_prefix }}/system/kubelet.service"
     owner: root
     group: root
     mode: 0644

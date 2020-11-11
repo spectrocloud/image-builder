@@ -18,7 +18,9 @@ set -o errexit
 set -o nounset
 set -o pipefail
 
-_version="2.8.0"
+source hack/utils.sh
+
+_version="2.10.0"
 
 # Change directories to the parent directory of the one in which this
 # script is located.
@@ -26,19 +28,6 @@ cd "$(dirname "${BASH_SOURCE[0]}")/.."
 
 if command -v ansible >/dev/null 2>&1; then exit 0; fi
 
-mkdir -p .bin && cd .bin
-
-if ! command -v python >/dev/null 2>&1; then
-  echo "Python binary must be in \$PATH" 1>&2
-  exit 1
-fi
-if ! command -v pip >/dev/null 2>&1; then
-  curl -L https://bootstrap.pypa.io/get-pip.py -o get-pip.py
-  python get-pip.py --user
-  rm -f get-pip.py
-fi
-python -m pip install --user "ansible==${_version}"
-if ! command -v ansible >/dev/null 2>&1; then
-  echo "User's Python binary directory must bin in \$PATH" 1>&2
-  exit 1
-fi
+ensure_py3
+pip3 install --user "ansible==${_version}"
+ensure_py3_bin ansible

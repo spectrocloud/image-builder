@@ -61,7 +61,7 @@
   - { path: /var/lib/apt/lists, state: absent,    mode: "0755" }
   - { path: /var/lib/apt/lists, state: directory, mode: "0755" }
 
-- name: Disable unwanted systemd services
+- name: Disable apt-daily services
   systemd:
     name: "{{ item }}"
     state: stopped
@@ -71,17 +71,18 @@
   - apt-daily.timer
   - apt-daily-upgrade
   - apt-daily-upgrade.timer
-  - unattended-upgrades
+
+- name: Get installed packages
+  package_facts:
+
+- name: Disable unattended upgrades if installed
+  systemd:
+    name: unattended-upgrades
+    state: stopped
+    enabled: false
+  when: "'unattended-upgrades' in ansible_facts.packages"
 
 - name: Reset network interface IDs
   file:
     state: absent
     path: /etc/udev/rules.d/70-persistent-net.rules
-
-- name: Remove grub dir
-  file:
-    path: "/etc/default/grub.d"
-    state: absent
-
-- name: Update grub
-  command: "update-grub"

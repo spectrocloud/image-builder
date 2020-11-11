@@ -20,17 +20,15 @@ set -o pipefail
 
 source hack/utils.sh
 
-_version="0.3.0"
-darwin_sha256="7ae43b5dbd26a166c8673fc7299e91d1c2244c7d2b3b558ce04e2e53acfa6f88"
-linux_sha256="28be39d0ddf9ad9c14e432818261abed2f2bd83257cfba213e19d5c59b710d03"
-_bin_url="https://github.com/YaleUniversity/packer-provisioner-goss/releases/download/v${_version}/packer-provisioner-goss-v${_version}-${HOSTOS}-${HOSTARCH}"
-
+# SHA are for amd64 arch.
+_version="2.0.0"
+darwin_sha256="be09a793cb63e898895e9d371eb9015ab2ca7c8b5e929c1d79bafc7e23e871e0"
+linux_sha256="97ed6de22ba8f1f7d9cefa6234e771121c2918563057c44a0615c47de98391e4"
+_bin_url="https://github.com/YaleUniversity/packer-provisioner-goss/releases/download/v${_version}/packer-provisioner-goss-v${_version}-${HOSTOS}-${HOSTARCH}.tar.gz"
+_tarfile="${HOME}/.packer.d/plugins/packer-provisioner-goss.tar.gz"
 _binfile="${HOME}/.packer.d/plugins/packer-provisioner-goss"
-if [ -f "${_binfile}" ]; then
-  { [ -x "${_binfile}" ] && exit 0; } || rm -f "${_binfile}"
-fi
-_bin_dir="$(dirname "${_binfile}")"
-mkdir -p "${_bin_dir}" && cd "${_bin_dir}"
+
+# Get a shasum for right OS's binary
 case "${HOSTOS}" in
 linux)
   _sha256="${linux_sha256}"
@@ -43,7 +41,26 @@ darwin)
   return 1
   ;;
 esac
-curl -L "${_bin_url}" -o "${_binfile}"
+
+# Check if current binary is latest
+if [ -f "${_binfile}" ]; then
+  current_shasum=$(get_shasum "${_binfile}")
+  if [ "$current_shasum" != "$_sha256" ]; then
+    echo "Wrong version of binary present."
+  else
+    echo "Right version of binary present"
+    # Check if binary is executable.
+    # If not, delete it and proceed. If it is executable, exit 0
+    { [ -x "${_binfile}" ] && exit 0; } || rm -f "${_binfile}"
+  fi
+fi
+
+# download binary, verify shasum, make it executable and clean up trash files.
+_bin_dir="$(dirname "${_tarfile}")"
+mkdir -p "${_bin_dir}" && cd "${_bin_dir}"
+curl -SsL "${_bin_url}" -o "${_tarfile}"
+tar -C "${_bin_dir}" -xzf "${_tarfile}"
+rm "${_tarfile}"
 printf "%s *${_binfile}" "${_sha256}" >"${_binfile}.sha256"
 if ! checksum_sha256 "${_binfile}.sha256"; then
   _exit_code="${?}"
