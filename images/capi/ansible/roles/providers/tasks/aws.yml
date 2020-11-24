@@ -19,3 +19,12 @@
     packages:
       - https://s3.amazonaws.com/cloudformation-examples/aws-cfn-bootstrap-latest.tar.gz
       - awscli
+- name: Install cloud-init packages
+  apt:
+    name: "{{ packages }}"
+    state: present
+    force_apt_get: yes
+  vars:
+    packages:
+      - cloud-init=20.2-45-g5f7825e2-0ubuntu1~18.04.1
+  when: ansible_os_family == "Debian"

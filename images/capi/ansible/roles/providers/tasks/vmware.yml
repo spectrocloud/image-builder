@@ -19,7 +19,7 @@
     force_apt_get: yes
   vars:
     packages:
-    - cloud-init=20.2-45-g5f7825e2-0ubuntu1~18.04.1
+    - cloud-init
     - cloud-guest-utils
     - cloud-initramfs-copymods
     - cloud-initramfs-dyn-netconf
