@@ -458,6 +458,7 @@ build-node-ova-vsphere-clone-photon-3: ## Builds Photon 3 Node OVA and template 
 build-node-ova-vsphere-clone-rhel-7: ## Builds RHEL 7 Node OVA and template on vSphere
 build-node-ova-vsphere-clone-ubuntu-1804: ## Builds Ubuntu 18.04 Node OVA and template on vSphere
 build-node-ova-vsphere-clone-ubuntu-2004: ## Builds Ubuntu 20.04 Node OVA and template on vSphere
+build-node-ova-vsphere-clone-flatcar: ## Builds Flatcar Node OVA and template on vSphere
 build-node-ova-vsphere-clone-all: $(NODE_OVA_VSPHERE_CLONE_BUILD_TARGETS) ## Builds all Node OVAs and templates on vSphere
 
 build-node-ova-vsphere-base-centos-7: ## Builds CentOS 7 Node OVA and template on vSphere
