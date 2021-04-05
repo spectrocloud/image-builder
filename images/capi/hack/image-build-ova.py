@@ -199,6 +199,9 @@ def main():
     # Create OVF
     create_ovf(ovf, data, ovf_template)
 
+    # Create MF
+    create_mf(ova_manifest, ovf, vmdk['name'])
+
     # Create the OVA.
     create_ova(ova, ovf)
 
@@ -228,6 +231,15 @@ def create_ova(ova_path, ovf_path):
     print("image-build-ova: create ova checksum %s" % chksum_path)
     with open(chksum_path, 'w') as f:
         f.write(sha256(ova_path))
+
+
+
+def create_mf(ova_manifest, ovf, vmdk):
+    print("image-build-ova: create mf file %s" % ova_manifest)
+    fmt="SHA256({})= {}\n"
+    with io.open(ova_manifest, 'w', encoding='utf-8') as f:
+      f.write(fmt.format(vmdk, sha256(vmdk)))
+      f.write(fmt.format(ovf, sha256(ovf)))
 
 
 def create_ovf(path, data, ovf_template):
