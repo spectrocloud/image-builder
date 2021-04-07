@@ -89,9 +89,11 @@
 
 - name: Cleanup telnet package
   command: echo "telnet install" | dpkg --set-selections
+  when: ansible_os_family == "Debian"
 
 - name: Cleanup grub-pc package
   command: echo "grub-pc install" | dpkg --set-selections
+  when: ansible_os_family == "Debian"
 
 - name: Exclude calico from being reported
   blockinfile:
@@ -99,3 +101,4 @@
     block: |
       [guestinfo]
       exclude-nics=veth*,docker*,virbr*,cali*,tunl0
+  when: ansible_os_family == "Debian"
