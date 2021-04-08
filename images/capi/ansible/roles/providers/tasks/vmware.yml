@@ -83,3 +83,22 @@
     state: stopped
     enabled: false
   when: ansible_os_family == "Debian"
+
+- name: Enable timesync with host machine
+  command: vmware-toolbox-cmd timesync enable
+
+- name: Cleanup telnet package
+  command: echo "telnet install" | dpkg --set-selections
+  when: ansible_os_family == "Debian"
+
+- name: Cleanup grub-pc package
+  command: echo "grub-pc install" | dpkg --set-selections
+  when: ansible_os_family == "Debian"
+
+- name: Exclude calico from being reported
+  blockinfile:
+    path: /etc/vmware-tools/tools.conf
+    block: |
+      [guestinfo]
+      exclude-nics=veth*,docker*,virbr*,cali*,tunl0
+  when: ansible_os_family == "Debian"
