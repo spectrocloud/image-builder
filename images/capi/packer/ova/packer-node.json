@@ -390,6 +390,7 @@
       "output": "{{user `output_dir`}}/packer-manifest.json",
       "strip_path": true,
       "custom_data": {
+        "build_version": "{{user `build_version`}}",
         "build_name": "{{user `build_name`}}",
         "distro_name": "{{ user `distro_name` }}",
         "distro_version": "{{ user `distro_version` }}",

@@ -192,9 +192,14 @@ def main():
       <Property ovf:userConfigurable="false" ovf:value="${DATAPLANEAPI_VERSION}" ovf:type="string" ovf:key="DATAPLANEAPI_VERSION"/>
         ''').substitute(data)
 
-    ovf = "%s-%s.ovf" % (build_data['build_name'], data['TYPED_VERSION'])
-    ova_manifest = "%s-%s.mf" % (build_data['build_name'], data['TYPED_VERSION'])
-    ova = "%s-%s.ova" % (build_data['build_name'], data['TYPED_VERSION'])
+    #ovf = "%s-%s.ovf" % (build_data['build_name'], data['TYPED_VERSION'])
+    #ova_manifest = "%s-%s.mf" % (build_data['build_name'], data['TYPED_VERSION'])
+    #ova = "%s-%s.ova" % (build_data['build_name'], data['TYPED_VERSION'])
+
+
+    ovf = "%s.ovf" % (build_data['build_version'])
+    ova_manifest = "%s.mf" % (build_data['build_version'])
+    ova = "%s.ova" % (build_data['build_version'])
 
     # Create OVF
     create_ovf(ovf, data, ovf_template)
