@@ -12,17 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 ---
-- name: Symlink cri-tools
-  file:
-    src:   "/usr/local/bin/{{ item }}"
-    dest:  "/usr/bin/{{ item }}"
-    state: link
-    force: yes
-  loop:
-  - ctr
-  - critest
-
-
 - name: Download CRICTL tarball
   get_url:
     url: "https://github.com/kubernetes-sigs/cri-tools/releases/download/{{ critctl_version }}/crictl-{{ critctl_version }}-linux-amd64.tar.gz"
@@ -41,6 +30,19 @@
   file:
     state: absent
     path: "/tmp/crictl-{{ critctl_version }}-linux-amd64.tar.gz"
+
+
+- name: Symlink cri-tools
+  file:
+    src:   "/usr/local/bin/{{ item }}"
+    dest:  "/usr/bin/{{ item }}"
+    state: link
+    force: yes
+  loop:
+  - ctr
+  - crictl
+  - critest
+
 
 
 - name: Create CNI directory
