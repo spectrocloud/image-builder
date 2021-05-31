@@ -20,8 +20,28 @@
     force: yes
   loop:
   - ctr
-  - crictl
   - critest
+
+
+- name: Download CRICTL tarball
+  get_url:
+    url: "https://github.com/kubernetes-sigs/cri-tools/releases/download/{{ critctl_version }}/crictl-{{ critctl_version }}-linux-amd64.tar.gz"
+    dest: "/tmp/crictl-{{ critctl_version }}-linux-amd64.tar.gz"
+    mode: 0755
+    owner: root
+    group: root
+
+- name: Install CRICTL
+  unarchive:
+    remote_src: yes
+    dest: /usr/local/bin
+    src: "/tmp/crictl-{{ critctl_version }}-linux-amd64.tar.gz"
+
+- name: Remove CRICTL tarball
+  file:
+    state: absent
+    path: "/tmp/crictl-{{ critctl_version }}-linux-amd64.tar.gz"
+
 
 - name: Create CNI directory
   file:
