@@ -14,7 +14,7 @@
 ---
 - name: Download CRICTL tarball
   get_url:
-    url: "https://github.com/kubernetes-sigs/cri-tools/releases/download/{{ critctl_version }}/crictl-v{{ critctl_version }}-linux-amd64.tar.gz"
+    url: "https://github.com/kubernetes-sigs/cri-tools/releases/download/{{ critctl_version }}/crictl-{{ critctl_version }}-linux-amd64.tar.gz"
     dest: "/tmp/crictl-{{ critctl_version }}-linux-amd64.tar.gz"
     mode: 0755
     owner: root
