@@ -42,9 +42,11 @@ fi
 export PATH=/root/.local/bin:$PATH
 export PATH=/home/ubuntu/image-builder/images/capi/.local/bin:$PATH
 
-git clone https://github.com/kubernetes-sigs/image-builder.git
+git clone https://github.com/spectrocloud/image-builder.git
 
 cd image-builder/images/capi/
+
+git checkout openstack-support
 
 export K8S_VERSION="1.20.7"
 
@@ -89,5 +91,5 @@ region =  us-east-1" > /root/.aws/credentials
 
 export AWS_PROFILE=goldenci-bucket
 
-aws s3api put-object --acl public-read --bucket openstackgoldenimage --key "u-${IMAGE_OS_VERSION}-0-${IMAGE_K8S_VERSION}-0.img" --body ./output/ubuntu-${OUTPUT_OS_VERSION}-kube-v${K8S_VERSION}/ubuntu-${OUTPUT_OS_VERSION}-kube-v${K8S_VERSION}
+aws s3api put-object --acl public-read --bucket openstackgoldenimage --key "u-${OUTPUT_OS_VERSION}-0-k-${IMAGE_K8S_VERSION}-0.img" --body ./output/ubuntu-${OUTPUT_OS_VERSION}-kube-v${K8S_VERSION}/ubuntu-${OUTPUT_OS_VERSION}-kube-v${K8S_VERSION}
 
