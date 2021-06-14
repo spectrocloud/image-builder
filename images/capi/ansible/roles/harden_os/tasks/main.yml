@@ -1,0 +1,20 @@
+---
+- name: run hardening script
+  script: sec_harden.sh
+  register: out
+
+- name: Enable journald persistence
+  ini_file:
+    path: /etc/systemd/journald.conf
+    backup: yes
+    no_extra_spaces: yes
+    section: "{{ item.section }}"
+    option: "{{ item.option }}"
+    value: "{{ item.value }}"
+  with_items:
+    - { section: "Journal", option: "Storage", value: "persistent" }
+    - { section: "Journal", option: "Compress", value: "yes" }
+    - { section: "Journal", option: "MaxRetentionSec", value: "3month" }
+    - { section: "Journal", option: "MaxFileSec", value: "1month" }
+
+- debug: var=out.stdout_lines
