@@ -17,6 +17,8 @@
 
   tasks:
     - include_role:
+        name: harden_os
+    - include_role:
         name: node
     - include_role:
         name: providers
@@ -35,8 +37,6 @@
       when: custom_role | default(false)|bool
     - include_role:
         name: sysprep
-    - include_role:
-        name: harden_os
 
   environment:
     http_proxy: "{{ http_proxy | default('') }}"
