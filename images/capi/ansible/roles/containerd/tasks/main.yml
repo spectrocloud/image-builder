@@ -39,6 +39,18 @@
     extra_opts:
       - --no-overwrite-dir
 
+- name: Creates containerd config directory
+  file:
+    path: /etc/containerd
+    state: directory
+
+- name: Copy in containerd config overrides
+  template:
+    dest: /etc/containerd/config.toml
+    src: etc/containerd/config.toml
+    mode: 0644
+
+
 - name: start containerd service
   systemd:
     name: containerd
