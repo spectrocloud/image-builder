@@ -38,7 +38,6 @@
     dest: /
     extra_opts:
       - --no-overwrite-dir
-      -
 
 - name: Creates containerd config directory
   file:
