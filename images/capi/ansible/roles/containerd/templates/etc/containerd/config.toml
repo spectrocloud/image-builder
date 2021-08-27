@@ -43,5 +43,3 @@ version = 2
   {% endif %}
 
 {% endif %}
-
-{{containerd_additional_settings | b64decode}}
