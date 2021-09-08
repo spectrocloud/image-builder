@@ -19,3 +19,19 @@
     packages:
       - https://s3.amazonaws.com/cloudformation-examples/aws-cfn-bootstrap-latest.tar.gz
       - awscli
+
+- name: install futures for python 2.7
+  pip:
+    name: "futures"
+  when: ansible_os_family == "RedHat"
+
+- name: uninstall default rsa
+  pip:
+    name: "rsa"
+    state: absent
+  when: ansible_os_family == "RedHat"
+
+- name: install rsa==4.0
+  pip:
+    name: rsa==4.0
+  when: ansible_os_family == "RedHat"
