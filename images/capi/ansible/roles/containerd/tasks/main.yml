@@ -64,12 +64,7 @@
     state: absent
 
 - name: temporarily move crictl bin to /bin
-  copy:
-    src: /usr/local/bin/crictl
-    dest: /bin/crictl
-    owner: root
-    group: root
-    mode: 0755
+  shell: mv /usr/local/bin/crictl /bin/crictl
   when: ansible_os_family == "RedHat"
 
 - name: install pause image
