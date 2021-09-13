@@ -63,5 +63,14 @@
     path: /tmp/containerd.tar.gz
     state: absent
 
+- name: temporarily move crictl bin to /bin
+  copy:
+    src: /usr/local/bin/crictl
+    dest: /bin/crictl
+    owner: root
+    group: root
+    mode: 0755
+  when: ansible_os_family == "RedHat"
+
 - name: install pause image
   command: "crictl pull {{ containerd_pause_image }}"
