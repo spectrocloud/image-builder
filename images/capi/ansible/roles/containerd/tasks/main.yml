@@ -70,6 +70,7 @@
     owner: root
     group: root
     mode: 0755
+  when: ansible_os_family == "RedHat"
 
 - name: install pause image
   command: "crictl pull {{ containerd_pause_image }}"
