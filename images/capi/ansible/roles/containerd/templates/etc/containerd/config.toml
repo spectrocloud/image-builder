@@ -39,7 +39,9 @@ version = 2
     sandbox_image = "{{ containerd_pause_image }}"
   {% if kubernetes_semver is version('1.21.0', '>=') %}
   [plugins."io.containerd.grpc.v1.cri".containerd.runtimes.runc.options]
-      SystemdCgroup = true
+    SystemdCgroup = true
+  [plugins."io.containerd.grpc.v1.cri".containerd.runtimes.runc]
+    runtime_type = "io.containerd.runc.v2"
   {% endif %}
 
 {% endif %}
