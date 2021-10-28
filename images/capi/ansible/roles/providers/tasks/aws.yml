@@ -35,3 +35,10 @@
   pip:
     name: rsa==4.0
   when: ansible_os_family == "RedHat"
+
+#  pip install --upgrade botocore==1.21.57
+- name: botocore downgrade
+  pip:
+    name: botocore==1.21.57
+    extra_args: --upgrade
+  when: ansible_os_family == "RedHat"
