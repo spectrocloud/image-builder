@@ -9,7 +9,7 @@
     "build_version": "{{user `build_name`}}-kube-{{user `kubernetes_semver`}}",
     "containerd_version": null,
     "containerd_sha256": null,
-    "containerd_url": "https://storage.googleapis.com/cri-containerd-release/cri-containerd-{{user `containerd_version`}}.linux-amd64.tar.gz",
+    "containerd_url": "https://github.com/containerd/containerd/releases/download/v{{user `containerd_version`}}/cri-containerd-cni-{{user `containerd_version`}}-linux-amd64.tar.gz",
     "dataplane_url": "https://github.com/haproxytech/dataplaneapi/releases/download/v{{user `dataplaneapi_version`}}/dataplaneapi",
     "disable_public_repos": "false",
     "disk_type_id": "0",
