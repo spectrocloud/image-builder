@@ -19,7 +19,7 @@
     force_apt_get: yes
   vars:
     packages:
-    - cloud-init
+    - cloud-init=21.1-19-gbad84ad4-0ubuntu2
     - cloud-guest-utils
     - cloud-initramfs-copymods
     - cloud-initramfs-dyn-netconf
