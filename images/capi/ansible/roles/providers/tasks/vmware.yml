@@ -19,11 +19,23 @@
     force_apt_get: yes
   vars:
     packages:
-    - cloud-init=21.1-19-gbad84ad4-0ubuntu2
+    - cloud-init
     - cloud-guest-utils
     - cloud-initramfs-copymods
     - cloud-initramfs-dyn-netconf
     - cloud-initramfs-growroot
+  when: ansible_os_family == "Debian"
+
+
+- name: Download cloud-init_21.1-19 from launchpad
+  get_url:
+    url: "{{ cloud_init_deb_download_url }}"
+    dest: /tmp
+  register: cloud_init_deb_file
+  when: ansible_os_family == "Debian"
+
+- name: Install cloud-init v21.1-19 deb
+  command: "dpkg -i {{ cloud_init_deb_file.dest }}"
   when: ansible_os_family == "Debian"
 
 - name: Install cloud-init packages
