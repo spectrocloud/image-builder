@@ -39,6 +39,19 @@
     extra_opts:
       - --no-overwrite-dir
 
+# Ref: https://github.com/kubernetes-sigs/image-builder/pull/383
+# Remove /opt/cni directory, as we will install cni later
+- name: delete /opt/cni directory
+  file:
+    path: /opt/cni
+    state: absent
+
+# Remove /etc/cni directory, as we will configure cni later
+- name: delete /etc/cni directory
+  file:
+    path: /etc/cni
+    state: absent
+
 - name: Creates containerd config directory
   file:
     path: /etc/containerd
