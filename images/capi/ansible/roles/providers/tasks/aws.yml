@@ -12,6 +12,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 ---
+- name: install pinned versoin of pystache==0.5.4
+  pip:
+    name: "{{ packages }}"
+  vars:
+    packages:
+      - pystache==0.5.4
+
 - name: install aws clients
   pip:
     name: "{{ packages }}"
