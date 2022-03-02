@@ -108,3 +108,14 @@
     owner: root
     group: root
     mode: 0644
+
+- name: Enable timesync with host machine
+  command: vmware-toolbox-cmd timesync enable
+
+- name: Cleanup telnet package
+  command: echo "telnet install" | dpkg --set-selections
+  when: ansible_os_family == "Debian"
+
+- name: Cleanup grub-pc package
+  command: echo "grub-pc install" | dpkg --set-selections
+  when: ansible_os_family == "Debian"
