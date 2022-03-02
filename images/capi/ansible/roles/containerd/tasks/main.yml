@@ -132,3 +132,6 @@
   file:
     path: /tmp/containerd.tar.gz
     state: absent
+
+- name: install pause image
+  command: "crictl pull {{ containerd_pause_image }}"
