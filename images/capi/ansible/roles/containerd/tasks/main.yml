@@ -134,4 +134,4 @@
     state: absent
 
 - name: install pause image
-  command: "crictl pull {{ containerd_pause_image }}"
+  command: "crictl pull {{ pause_image }}"
