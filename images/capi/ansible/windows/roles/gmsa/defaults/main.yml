@@ -1,4 +1,4 @@
-# Copyright 2019 The Kubernetes Authors.
+# Copyright 2022 The Kubernetes Authors.
 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -12,6 +12,5 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 ---
-extra_repos: ""
-pip_conf_file: ""
-remove_extra_repos: false
+
+gmsa_keyvault: '{{ true if (gmsa_keyvault_url is defined) and (gmsa_keyvault_url | length > 0) else false }}'

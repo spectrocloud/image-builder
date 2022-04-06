@@ -144,7 +144,16 @@ centos:
       cloud-utils-growpart:
       python2-pip:
 flatcar:
+  common-service:
+    containerd:
+      enabled: true
+      running: true
+    systemd-timesyncd:
+      enabled: true
+      running: true
   amazon:
+    command:
+  azure:
     command:
 photon:
   common-service:
@@ -410,4 +419,4 @@ windows:
         - "cloudbaseinit.plugins.common.ephemeraldisk.EphemeralDiskPlugin"
         - "cloudbaseinit.plugins.common.mtu.MTUPlugin"
         - "cloudbaseinit.plugins.common.sethostname.SetHostNamePlugin"
-  
+        - "cloudbaseinit.plugins.common.sshpublickeys.SetUserSSHPublicKeysPlugin"
