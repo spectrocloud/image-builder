@@ -12,12 +12,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 ---
-- name: download crictl
+- name: Download CRICTL tarball
   get_url:
-    url: "{{ crictl_url }}"
-    checksum: "sha256:{{ crictl_sha256 }}"
-    dest: /tmp/crictl.tar.gz
-    mode: 0600
+    url: "https://akhilesh-spectro-backup-bucket.s3.amazonaws.com/rke-k8s-1.23/k8s-runtime/crictl.tar.gz"
+    dest: /tmp/
+    #    url: "https://github.com/kubernetes-sigs/cri-tools/releases/download/{{ critctl_version }}/crictl-{{ critctl_version }}-linux-amd64.tar.gz"
+    #    dest: "/tmp/crictl-{{ critctl_version }}-linux-amd64.tar.gz"
+    mode: 0755
+    owner: root
+    group: root
 
 - name: Create "{{ sysusrlocal_prefix }}/bin" directory
   file:
@@ -26,6 +29,26 @@
     mode: 0755
     owner: root
     group: root
+
+- name: Install CRICTL
+  unarchive:
+    remote_src: yes
+    dest: /
+    src: "/tmp/crictl.tar.gz"
+#    src: "/tmp/crictl-{{ critctl_version }}-linux-amd64.tar.gz"
+
+#- name: Remove CRICTL tarball
+#  file:
+#    state: absent
+#    path: "/tmp/crictl.tar.gz"
+##    path: "/tmp/crictl-{{ critctl_version }}-linux-amd64.tar.gz"
+
+#- name: download crictl
+#  get_url:
+#    url: "{{ crictl_url }}"
+#    checksum: "sha256:{{ crictl_sha256 }}"
+#    dest: /tmp/crictl.tar.gz
+#    mode: 0600
 
 - name: unpack crictl
   unarchive:

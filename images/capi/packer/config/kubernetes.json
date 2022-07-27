@@ -15,7 +15,7 @@
   "kubernetes_rpm_version": "1.19.11-0",
   "kubernetes_semver": "v1.19.11",
   "kubernetes_series": "v1.19",
-  "kubernetes_source_type": "pkg",
+  "kubernetes_source_type": "http",
   "systemd_prefix": "/usr/lib/systemd",
   "sysusr_prefix": "/usr",
   "sysusrlocal_prefix": "/usr/local"

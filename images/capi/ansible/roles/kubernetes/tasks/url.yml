@@ -22,7 +22,7 @@
   loop:
   - ctr
   - crictl
-  - critest
+#  - critest
   when: ansible_os_family != "Flatcar"
 
 - name: Create CNI directory
@@ -53,39 +53,68 @@
     state: absent
     path: /tmp/cni.tar.gz
 
-- name: Download Kubernetes binaries
+
+- name: Download kubeadm binaries
   get_url:
-    url: "{{ kubernetes_http_source }}/{{ kubernetes_semver }}/bin/linux/{{ kubernetes_goarch }}/{{ item }}"
+    url : "https://storage.googleapis.com/kubernetes-release/release/v1.23.4/bin/linux/amd64/kubeadm"
+    # url: "https://dl.k8s.io/release/{{ kubernetes_semver }}/bin/linux/amd64/{kubeadm}"
     # TODO(akutz) Write a script to separately download the checksum
     #             and verify the associated file using the correct
     #             checksum file format
     #checksum: "sha1:{{ kubernetes_http_source }}/bin/linux/amd64/{{ item }}.sha1"
-    dest: "{{ sysusr_prefix }}/bin/{{ item }}"
+    dest: "/usr/bin/kubeadm"
     mode: 0755
     owner: root
     group: root
-  loop: "{{ kubernetes_bins }}"
 
-- name: Download Kubernetes images
+- name: Download kubelet,kubectl tarball
   get_url:
-    url: "{{ kubernetes_http_source }}/{{ kubernetes_semver }}/bin/linux/{{ kubernetes_goarch }}/{{ item }}"
-    # TODO(akutz) Write a script to separately download the checksum
-    #             and verify the associated file using the correct
-    #             checksum file format
-    #checksum: "sha1:{{ kubernetes_http_source }}/bin/linux/amd64/{{ item }}.sha1"
-    dest: "/tmp/{{ item }}"
-    mode: 0600
-  loop: "{{ kubernetes_imgs }}"
+    #    url: "https://github.com/kubernetes-sigs/cri-tools/releases/download/{{ critctl_version }}/crictl-{{ critctl_version }}-linux-amd64.tar.gz"
+    url: "https://akhilesh-spectro-backup-bucket.s3.amazonaws.com/rke-k8s-1.23/k8s-runtime/k8s-runtime.tar.gz"
+    dest: "/tmp/k8s-runtime.tar.gz"
+    mode: 0755
+    owner: root
+    group: root
 
-- name: Load Kubernetes images
-  shell: 'CONTAINERD_NAMESPACE="k8s.io" /usr/bin/ctr --address={{ containerd_cri_socket }} images import /tmp/{{ item }}'
-  loop: "{{ kubernetes_imgs }}"
+- name: Install kubelet,kubectl
+  unarchive:
+    remote_src: yes
+    dest: /
+    src: "/tmp/k8s-runtime.tar.gz"
 
-- name: Remove Kubernetes images
-  file:
-    state: absent
-    path: "/tmp/{{ item }}"
-  loop: "{{ kubernetes_imgs }}"
+#- name: Download Kubernetes binaries
+#  get_url:
+#    url: "{{ kubernetes_http_source }}/{{ kubernetes_semver }}/bin/linux/{{ kubernetes_goarch }}/{{ item }}"
+#    # TODO(akutz) Write a script to separately download the checksum
+#    #             and verify the associated file using the correct
+#    #             checksum file format
+#    #checksum: "sha1:{{ kubernetes_http_source }}/bin/linux/amd64/{{ item }}.sha1"
+#    dest: "{{ sysusr_prefix }}/bin/{{ item }}"
+#    mode: 0755
+#    owner: root
+#    group: root
+#  loop: "{{ kubernetes_bins }}"
+#
+#- name: Download Kubernetes images
+#  get_url:
+#    url: "{{ kubernetes_http_source }}/{{ kubernetes_semver }}/bin/linux/{{ kubernetes_goarch }}/{{ item }}"
+#    # TODO(akutz) Write a script to separately download the checksum
+#    #             and verify the associated file using the correct
+#    #             checksum file format
+#    #checksum: "sha1:{{ kubernetes_http_source }}/bin/linux/amd64/{{ item }}.sha1"
+#    dest: "/tmp/{{ item }}"
+#    mode: 0600
+#  loop: "{{ kubernetes_imgs }}"
+#
+#- name: Load Kubernetes images
+#  shell: 'CONTAINERD_NAMESPACE="k8s.io" /usr/bin/ctr --address={{ containerd_cri_socket }} images import /tmp/{{ item }}'
+#  loop: "{{ kubernetes_imgs }}"
+#
+#- name: Remove Kubernetes images
+#  file:
+#    state: absent
+#    path: "/tmp/{{ item }}"
+#  loop: "{{ kubernetes_imgs }}"
 
 - name: Create Kubernetes manifests directory
   file:
