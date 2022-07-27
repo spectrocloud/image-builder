@@ -1,5 +1,5 @@
 {
     "containerd_version": "1.4.11",
     "containerd_sha256": "a4a4af4776316833cad5996c66d59f8b4a2af4da716b7902b7a2d5f5ac362dcc",
-    "containerd_pause_image": "k8s.gcr.io/pause:3.2"
+    "containerd_pause_image": "docker.io/akhileshspec2022/pause:3.2"
 }
