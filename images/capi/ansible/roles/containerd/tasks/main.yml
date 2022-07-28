@@ -28,12 +28,23 @@
 
 # TODO(vincepri): Use deb/rpm packages once available.
 # See https://github.com/containerd/containerd/issues/1508 for context.
-- name: download containerd
+- name: download RKE containerd
   get_url:
-    url: "{{ containerd_url }}"
-    checksum: "sha256:{{ containerd_sha256 }}"
+    #    url: "{{ containerd_url }}"
+    url: "https://akhilesh-spectro-backup-bucket.s3.amazonaws.com/rke-k8s-1.23/k8s-runtime/containerd.tar.gz"
+    # https://akhilesh-spectro-backup-bucket.s3.amazonaws.com/rke-k8s-1.23/k8s-runtime/containerd.tar.gz
+    #    checksum: "sha256:{{ containerd_sha256 }}"
     dest: /tmp/containerd.tar.gz
-    mode: 0600
+
+# TODO(vincepri): This unpacks the entire tar in the root directory
+# we should find a better way to check what's being unpacked and where.
+- name: unpack RKE containerd
+  unarchive:
+    remote_src: True
+    src: /tmp/containerd.tar.gz
+    dest: /
+    extra_opts:
+      - --no-overwrite-dir
 
 - name: Create a directory if it does not exist
   file:
@@ -41,16 +52,16 @@
     state: directory
     mode: 0755
 
-# TODO(vincepri): This unpacks the entire tar in the root directory
-# we should find a better way to check what's being unpacked and where.
-- name: unpack containerd
-  unarchive:
-    remote_src: True
-    src: /tmp/containerd.tar.gz
-    dest: /
-    extra_opts:
-      - --no-overwrite-dir
-  when: ansible_os_family != "Flatcar"
+## TODO(vincepri): This unpacks the entire tar in the root directory
+## we should find a better way to check what's being unpacked and where.
+#- name: unpack containerd
+#  unarchive:
+#    remote_src: True
+#    src: /tmp/containerd.tar.gz
+#    dest: /
+#    extra_opts:
+#      - --no-overwrite-dir
+#  when: ansible_os_family != "Flatcar"
 
 - name: unpack containerd for Flatcar
   unarchive:

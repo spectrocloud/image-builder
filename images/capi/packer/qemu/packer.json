@@ -80,9 +80,6 @@
       "ansible_env_vars": [
         "ANSIBLE_SSH_ARGS='{{user `existing_ansible_ssh_args`}} -o IdentitiesOnly=yes'"
       ],
-      "ansible_ssh_extra_args": [
-        "-o HostKeyAlgorithms=+ssh-rsa -o PubkeyAcceptedKeyTypes=+ssh-rsa"
-      ],
       "extra_arguments": [
         "--extra-vars",
         "{{user `ansible_common_vars`}}",
