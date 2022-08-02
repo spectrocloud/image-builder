@@ -69,7 +69,7 @@
     name: conntrackd
     state: stopped
     enabled: false
-  when: ansible_os_family != "Debian" and ansible_os_family != "Flatcar"
+  when: ansible_os_family != "Debian" and ansible_os_family != "Flatcar" and ansible_os_family != "Suse"
 
 - name: Ensure auditd is running and comes on at reboot
   service:
@@ -95,3 +95,23 @@
     sysctl_set: yes
     reload: yes
   when: ansible_distribution == "Ubuntu"
+
+- name: Set transparent huge pages to madvise
+  lineinfile:
+    path: /etc/default/grub
+    backrefs: yes
+    regexp: "^(?!.*transparent_hugepage=madvise)(GRUB_CMDLINE_LINUX=.*)(\"$)"
+    line: '\1 transparent_hugepage=madvise"'
+  when: ansible_os_family == "RedHat"
+
+- name: Copy udev etcd network tuning rules
+  copy:
+    src: etc/udev/rules.d/90-etcd-tuning.rules
+    dest: /etc/udev/rules.d/90-etcd-tuning.rules
+    mode: 0744
+
+- name: Copy etcd network tuning script
+  copy:
+    src: usr/local/bin/etcd-network-tuning.sh
+    dest: /usr/local/bin/etcd-network-tuning.sh
+    mode: 0755

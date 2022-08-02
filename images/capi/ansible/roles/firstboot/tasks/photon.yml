@@ -12,7 +12,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-- name: Perform a tdnf distro-sync
-  command: tdnf distro-sync -y --refresh
-  register: distro
-  changed_when: '"Nothing to do" not in distro.stderr'
+# no-op task just to have something for the role to do. Right now
+# all the work happens in the setup role
+# - meta: noop
+
+- name: Set transparent huge pages to madvise
+  lineinfile:
+    path: /boot/photon.cfg
+    backrefs: yes
+    regexp: "^(?!.*transparent_hugepage=madvise)(photon_cmdline.*)"
+    line: '\1 transparent_hugepage=madvise'
