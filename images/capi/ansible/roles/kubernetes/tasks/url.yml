@@ -56,7 +56,7 @@
 
 - name: Download kubeadm binaries
   get_url:
-    url : "https://storage.googleapis.com/kubernetes-release/release/v1.23.4/bin/linux/amd64/kubeadm"
+    url : "https://storage.googleapis.com/kubernetes-release/release/v${K8S_VERSION}/bin/linux/amd64/kubeadm"
     # url: "https://dl.k8s.io/release/{{ kubernetes_semver }}/bin/linux/amd64/{kubeadm}"
     # TODO(akutz) Write a script to separately download the checksum
     #             and verify the associated file using the correct
@@ -70,7 +70,7 @@
 - name: Download kubelet,kubectl tarball
   get_url:
     #    url: "https://github.com/kubernetes-sigs/cri-tools/releases/download/{{ critctl_version }}/crictl-{{ critctl_version }}-linux-amd64.tar.gz"
-    url: "https://akhilesh-spectro-backup-bucket.s3.amazonaws.com/rke-k8s-1.23/k8s-runtime/k8s-runtime.tar.gz"
+    url: "https://${S3_BUCKET}.s3.amazonaws.com/${RKE_K8S_VERSION}/k8s-runtime/k8s-runtime.tar.gz"
     dest: "/tmp/k8s-runtime.tar.gz"
     mode: 0755
     owner: root
