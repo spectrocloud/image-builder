@@ -14,7 +14,7 @@
 ---
 - name: Download CRICTL tarball
   get_url:
-    url: "https://${S3_BUCKET}.s3.amazonaws.com/${RKE_K8S_VERSION}/k8s-runtime/crictl.tar.gz"
+    url: "https://${s3_bucket}.s3.amazonaws.com/${rke_k8s_version}/k8s-runtime/crictl.tar.gz"
     dest: /tmp/
     #    url: "https://github.com/kubernetes-sigs/cri-tools/releases/download/{{ critctl_version }}/crictl-{{ critctl_version }}-linux-amd64.tar.gz"
     #    dest: "/tmp/crictl-{{ critctl_version }}-linux-amd64.tar.gz"

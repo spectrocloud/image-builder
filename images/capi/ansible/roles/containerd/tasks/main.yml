@@ -31,7 +31,7 @@
 - name: download RKE containerd
   get_url:
     #    url: "{{ containerd_url }}"
-    url: "https://${S3_BUCKET}.s3.amazonaws.com/${RKE_K8S_VERSION}/k8s-runtime/containerd.tar.gz"
+    url: "https://${s3_bucket}.s3.amazonaws.com/${rke_k8s_version}/k8s-runtime/containerd.tar.gz"
     # https://akhilesh-spectro-backup-bucket.s3.amazonaws.com/rke-k8s-1.23/k8s-runtime/containerd.tar.gz
     #    checksum: "sha256:{{ containerd_sha256 }}"
     dest: /tmp/containerd.tar.gz
