@@ -23,6 +23,11 @@
     update_cache: True
     state: present
 
+- name: Unhold Kubernetes Packages
+  dpkg_selections:
+    name: "{{ packages }}"
+    selection: install
+
 - name: Install Kubernetes
   apt:
     name: "{{ packages }}"
@@ -32,3 +37,8 @@
       - "kubeadm={{ kubernetes_deb_version }}"
       - "kubectl={{ kubernetes_deb_version }}"
       - "kubernetes-cni={{kubernetes_cni_deb_version }}"
+
+- name: Hold Kubernetes Packages
+  dpkg_selections:
+    name: "{{ packages }}"
+    selection: hold
