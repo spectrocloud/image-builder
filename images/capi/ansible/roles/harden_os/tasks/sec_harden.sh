@@ -100,7 +100,9 @@ upgrade_packages() {
   if [[ ${OS_FLAVOUR} == "ubuntu" ]]; then
     apt-get update
     apt-get -y upgrade
+    # hwe_kernel
     check_error $? "Failed upgrading packages" 1
+    ubuntu_minimal
   fi
 
   if [[ ${OS_FLAVOUR} == "centos" ]]; then
@@ -121,6 +123,23 @@ upgrade_packages() {
 
   return 0
 
+}
+
+hwe_kernel() {
+   echo 'deb http://archive.ubuntu.com/ubuntu focal main restricted' > /etc/apt/sources.list.d/repotmp.list
+   apt update 
+   apt-get -y install --install-recommends linux-generic-hwe-18.04 
+   check_error $? "Failed upgrading HWE kernel" 1
+
+   rm -f /etc/apt/sources.list.d/repotmp.list
+   apt update 
+}
+
+
+ubuntu_minimal() {
+	# apt-get purge -y accountsservice apparmor apt-transport-https aptitude auditd bash-completion bind9-dnsutils bind9-host bind9-libs bsdmainutils command-not-found conntrack cpio dmidecode dosfstools ebtables ed friendly-recovery ftp fuse gettext-base gnupg groff-base hdparm info installation-report iputils-tracepath irqbalance iso-codes jq krb5-locales language-selector-common libaccountsservice0 libcbor0.6 libdrm-common libdrm2 libfido2-1 libfuse2 libgdbm6 libgssapi-krb5-2 libip6tc2 libk5crypto3 libkeyutils1 libkrb5-3 libkrb5support0 liblmdb0 libmaxminddb0 libnetfilter-acct1 libnetfilter-conntrack3 libnetfilter-cttimeout1 libnetfilter-log1 libnfnetlink0 libnftnl11 libntfs-3g883 libnuma1 libparted2 libpcap0.8 libpci3 libpipeline1 libplymouth5 libpng16-16 libpolkit-gobject-1-0 libpsl5 libuchardet0 libunwind8 libusb-1.0-0 libuv1 libx11-6 libx11-data libxau6 libxcb1 libxdmcp6 libxext6 libxmuu1 linux-cloud-tools-virtual linux-headers-virtual linux-tools-virtual linux-virtual lshw lsof ltrace man-db manpages mtr-tiny nano ntfs-3g open-vm-tools openssh-client parted pci.ids pciutils plymouth plymouth-theme-ubuntu-text popularity-contest powermgmt-base psmisc publicsuffix python3-commandnotfound python3-distro-info python3-distupgrade python3-distutils python3-gdbm python3-pip python3-update-manager rsync socat strace tasksel tcpdump telnet time ubuntu-release-upgrader-core ubuntu-standard ufw update-manager-core usb.ids usbutils uuid-runtime wget xauth
+	apt-get purge -y accountsservice apt-transport-https auditd bash-completion bind9-dnsutils bind9-host bind9-libs bsdmainutils command-not-found dmidecode dosfstools ed friendly-recovery ftp fuse gnupg groff-base info installation-report hdparm  iputils-tracepath krb5-locales  language-selector-common libaccountsservice0  libpcap0.8 libpipeline1 libplymouth5    libgdbm6  libuv1 libx11-6 libx11-data  libxau6 libxcb1 libxdmcp6 libxext6 libxmuu1 lshw lsof ltrace man-db manpages mtr-tiny nano ntfs-3g parted   plymouth plymouth-theme-ubuntu-text popularity-contest powermgmt-base psmisc publicsuffix rsync  strace tasksel tcpdump telnet time ubuntu-release-upgrader-core ubuntu-standard ufw update-manager-core usb.ids usbutils uuid-runtime xauth
+	apt-get -y autoremove
 }
 
 ##########################################################################
@@ -385,10 +404,10 @@ disable_modules() {
 	echo "install cramfs /bin/true"   > /etc/modprobe.d/blockfs.conf
 	echo "install freevxfs /bin/true" >> /etc/modprobe.d/blockfs.conf
 	echo "install jffs2 /bin/true"    >> /etc/modprobe.d/blockfs.conf
-	echo "install hfs /bin/true"      >> /etc/modprobe.d/blockfs.conf
-	echo "install hfsplus /bin/true"  >> /etc/modprobe.d/blockfs.conf
-	echo "install udf /bin/true"      >> /etc/modprobe.d/blockfs.conf
-	echo "install usb-storage /bin/true" >> /etc/modprobe.d/blockfs.conf
+	# echo "install hfs /bin/true"      >> /etc/modprobe.d/blockfs.conf
+	# echo "install hfsplus /bin/true"  >> /etc/modprobe.d/blockfs.conf
+	# echo "install udf /bin/true"      >> /etc/modprobe.d/blockfs.conf
+	# echo "install usb-storage /bin/true" >> /etc/modprobe.d/blockfs.conf
   fi
   return 0
 
@@ -406,6 +425,5 @@ harden_password_files
 harden_system
 remove_services
 disable_modules
-
 
 exit 0
