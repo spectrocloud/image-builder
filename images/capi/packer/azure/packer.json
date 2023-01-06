@@ -12,7 +12,7 @@
         "kubernetes_version": "{{user `kubernetes_semver`}}"
       },
       "capture_container_name": "{{user `capture_container_name`}}",
-      "capture_name_prefix": "capi-{{user `build_timestamp`}}",
+      "capture_name_prefix": "{{user `image_name`}}",
       "client_id": "{{user `client_id`}}",
       "client_secret": "{{user `client_secret`}}",
       "image_offer": "{{user `image_offer` }}",
