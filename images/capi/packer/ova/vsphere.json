@@ -1,16 +1,16 @@
 {
-  "cluster": "",
+  "cluster": "Cluster1",
   "convert_to_template": "false",
   "create_snapshot": "true",
-  "datacenter": "",
-  "datastore": "",
-  "folder": "",
-  "insecure_connection": "false",
+  "datacenter": "Datacenter",
+  "datastore": "vsanDatastore1",
+  "folder": "sp-sumit/pxk",
+  "insecure_connection": "true",
   "linked_clone": "true",
-  "network": "",
+  "network": "VM-NETWORK",
   "password": "",
-  "resource_pool": "",
+  "resource_pool": "rp-cluster1-palette-devx",
   "template": "",
-  "username": "",
-  "vcenter_server": ""
+  "username": "sumit@vsphere.local",
+  "vcenter_server": "vcenter.spectrocloud.dev"
 }
