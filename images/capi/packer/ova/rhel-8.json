@@ -1,6 +1,6 @@
 {
   "boot_command_prefix": "<up><tab> text inst.ks=",
-  "boot_command_suffix": "/8/ks.cfg<enter><wait>",
+  "boot_command_suffix": "/8/ks.cfg fips=1<enter><wait>",
   "boot_media_path": "http://{{ .HTTPIP }}:{{ .HTTPPort }}",
   "build_name": "rhel-8",
   "distro_arch": "amd64",
