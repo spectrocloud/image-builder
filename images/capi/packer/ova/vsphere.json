@@ -5,7 +5,7 @@
   "datacenter": "",
   "datastore": "",
   "folder": "",
-  "insecure_connection": "true",
+  "insecure_connection": "false",
   "linked_clone": "true",
   "network": "",
   "password": "",
