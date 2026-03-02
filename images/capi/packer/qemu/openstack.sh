@@ -84,9 +84,9 @@ echo $HOME
 
 mkdir -p /root/.aws
 
-echo "[goldenci-bucket]
-aws_access_key_id = AKIAWECVDHOP5UHD4H4X
-aws_secret_access_key = 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
+echo "[]
+aws_access_key_id = 
+aws_secret_access_key = 
 region =  us-east-1" > /root/.aws/credentials
 
 export AWS_PROFILE=goldenci-bucket
